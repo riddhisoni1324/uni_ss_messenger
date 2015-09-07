@@ -1,0 +1,13 @@
+//--for TypeMaster
+
+-i have set isdeleted bydefault 0 in database
+-i have set UpdatedOn bydefault getdate().it will enter dydefault date and time while enter data in database
+-not used triggger or insert query for UpdatedOn  column data
+
+
+//--for CategoryMaster
+
+-drop down first select Type 
+-i have set isdeleted bydefault 0 in database
+-i have set UpdatedOn bydefault getdate().it will enter dydefault date and time while enter data in database
+-not used triggger or insert query for UpdatedOn  column data

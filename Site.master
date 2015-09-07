@@ -23,6 +23,7 @@
                     <Items>
                         <asp:MenuItem NavigateUrl="~/Default.aspx" Text="Home"/>
                         <asp:MenuItem NavigateUrl="~/TypeMaster.aspx" Text="TypeMaster"/>
+                        <asp:MenuItem NavigateUrl="~/CategoryMaster.aspx" Text="Categorymaster"/>
                         <asp:MenuItem NavigateUrl="~/About.aspx" Text="About"/>
                     </Items>
                 </asp:Menu>

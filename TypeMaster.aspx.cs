@@ -25,22 +25,27 @@ public partial class TypeMaster : System.Web.UI.Page
         insert_type.Parameters.Add("@UpdatedBy", t_type_update.Text);
         if ((con1.State & ConnectionState.Open) > 0)
         {
-            Response.Write("Connection OK!");
+            //Response.Write("Connection OK!");
             int i = insert_type.ExecuteNonQuery();
             if (i != 0)
             {
                 Response.Write(i);
-                Response.Write("row inserted");
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
+              //  Response.Write("row inserted");
             }
             else
             {
-                Response.Write("row not inserted");
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+              //  Response.Write("row not inserted");
             }
         }
         else
         {
-            Response.Write("not conncted");
+            ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+            //Response.Write("not conncted");
         }
+        t_type_desc.Text = "";
+        t_type_update.Text = " ";
 
         con1.Close();
     }
