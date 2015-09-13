@@ -19,7 +19,7 @@ public partial class TypeMaster : System.Web.UI.Page
         }
 
     }
-   
+
     protected void btn_add_type(object sender, EventArgs e)
     {
         string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
@@ -36,12 +36,12 @@ public partial class TypeMaster : System.Web.UI.Page
             {
                 Response.Write(i);
                 ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
-              //  Response.Write("row inserted");
+                //  Response.Write("row inserted");
             }
             else
             {
                 ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-              //  Response.Write("row not inserted");
+                //  Response.Write("row not inserted");
             }
         }
         else
@@ -56,13 +56,13 @@ public partial class TypeMaster : System.Web.UI.Page
     }
 
 
-   
+
 
     protected void Edit_Command(object source, DataListCommandEventArgs e)
     {
         int ID = Convert.ToInt32(e.CommandArgument);
 
-        Response.Write("hello efit clicked"+ID+"..");
+        Response.Write("hello efit clicked" + ID + "..");
         //btnBack.Text = "Cancel";
         string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
         SqlConnection con1 = new SqlConnection(cs1);
@@ -72,7 +72,7 @@ public partial class TypeMaster : System.Web.UI.Page
 
         // SqlCommand cmd = new SqlCommand("SELECT * FROM TypeMaster where typeid=1",con1);
         cmd.CommandText = "SELECT * FROM TypeMaster where typeid=@ID";
-        cmd.Parameters.Add("@ID",ID);
+        cmd.Parameters.Add("@ID", ID);
 
 
         cmd.Connection = con1;
@@ -87,7 +87,9 @@ public partial class TypeMaster : System.Web.UI.Page
                 //txtFacultyCode.Text = 1;
                 t_type_id1.Text = rdr.GetDecimal(0).ToString();
                 t_type_desc1.Text = rdr.GetString(1);
-              
+                Response.Write(t_type_desc.Text);
+                   
+
             }
             Response.Write(" " + j + " ");
         }
