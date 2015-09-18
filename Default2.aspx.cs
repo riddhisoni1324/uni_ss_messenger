@@ -21,6 +21,7 @@ using System.Data;
             }
             pos = (int)this.ViewState["vs"];
             databind();
+
         }
         public void databind()
         {
@@ -141,4 +142,9 @@ using System.Data;
             }
         }
 
-    }
+        protected void cat_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+
+        }
+}

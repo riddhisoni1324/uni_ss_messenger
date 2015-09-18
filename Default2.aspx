@@ -64,6 +64,13 @@
     </tr>
    </table>
     </div>
+    </asp:DropDownList>
+    <asp:SqlDataSource ID="SqlDataSource1" runat="server" 
+        ConnectionString="<%$ ConnectionStrings:ConnectionString %>" 
+        SelectCommand="SELECT [CategoryDesc] FROM [CategoryMaster] ">
+    </asp:SqlDataSource>
+
+   
     </form>
 </body>
 </html>
