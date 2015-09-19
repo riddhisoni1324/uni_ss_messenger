@@ -18,9 +18,17 @@ public partial class Categorymaster : System.Web.UI.Page
    
     protected void Page_Load(object sender, EventArgs e)
     {
+        for (int o = 0; o < 5; o++)
+        {
+            ListItem li = new ListItem();
+            li.Text = "hii";
+            li.Value = "hello";
+            DropDiwnList1.Items.Add(li);
+        }
         if (!IsPostBack)
         {
             this.ViewState["vs"] = 0;
+
         }
         pos = (int)this.ViewState["vs"];
         databind();
