@@ -64,7 +64,7 @@
                 <asp:Label ID="l_mem_add1" runat="server" Text="Address1"></asp:Label>
             </td>
             <td class="table_wid">
-                <asp:TextBox ID="t_mem_add1" runat="server" TextMode="MultiLine" CssClass="radius" Width="175px"></asp:TextBox>
+                <asp:TextBox ID="t_mem_add1" runat="server" TextMode="MultiLine" CssClass="radius" Width="195px"></asp:TextBox>
             </td>
         </tr>
         <tr>
@@ -72,7 +72,7 @@
                 <asp:Label ID="_mem" runat="server" Text="Address2"></asp:Label>
             </td>
             <td class="table_wid">
-                <asp:TextBox ID="t_mem_add2" runat="server" TextMode="MultiLine" CssClass="radius" Width="175px"></asp:TextBox>
+                <asp:TextBox ID="t_mem_add2" runat="server" TextMode="MultiLine" CssClass="radius" Width="195px"></asp:TextBox>
             </td>
         </tr>
         <tr>
@@ -154,7 +154,8 @@
     <p>
         <asp:SqlDataSource ID="SqlDataSource2" runat="server" ConnectionString="<%$ ConnectionStrings:ConnectionString %>"
             SelectCommand="SELECT * FROM [TypeMaster]"></asp:SqlDataSource>
-        <asp:Button ID="Button1" runat="server" Text="Add Member" ValidationGroup="f" />
+        <asp:Button ID="Button1" runat="server" Text="Add Member" ValidationGroup="f" 
+            onclick="Button1_Click" />
     </p>
     <p>
     </p>

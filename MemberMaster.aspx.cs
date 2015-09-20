@@ -61,7 +61,6 @@ public partial class MemberMaster : System.Web.UI.Page
                 message += item.Text + " " + item.Value + "\\n";
                 ListItem li = new ListItem();
 
-                //ListBox2.Items.Clear();
                 string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
@@ -76,10 +75,16 @@ public partial class MemberMaster : System.Web.UI.Page
                     while (rdr.Read())
                     {
                         j++;
-                        li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
-                        li.Value = rdr[0].ToString();
-                        Response.Write(li.Text + "\n");
-                        ListBox2.Items.Add(li.Text);
+                        //li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
+                        //li.Value = rdr[0].ToString();
+                        //Response.Write(li.Text + "\n"+li.Value);
+                        //ListBox2.Items.Add(li.Text);
+
+                        ListBox2.Items.Add(rdr["categorydesc"].ToString());
+                        ListBox2.DataSource = rdr;
+                        ListBox2.DataTextField = rdr["categorydesc"].ToString();
+                        ListBox2.DataValueField = rdr["categoryid"].ToString();
+                        //ListBox2.DataBind();
                     }
                 }
                 con.Close();
@@ -91,4 +96,70 @@ public partial class MemberMaster : System.Web.UI.Page
         //ClientScript.RegisterClientScriptBlock(this.GetType(), "alert", "alert('" + message + "');", true);
     }
 
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        if (ListBox1.Items.Count > 0)
+        {
+            for (int i = 0; i < ListBox1.Items.Count; i++)
+            {
+                if (ListBox1.Items[i].Selected)
+                {
+                    string selectedItem = ListBox1.Items[i].Value;
+                    //insert command
+                    Response.Write(selectedItem);
+                }
+            }
+        }
+
+        if (ListBox2.Items.Count > 0)
+        {
+            for (int i = 0; i < ListBox2.Items.Count; i++)
+            {
+                if (ListBox2.Items[i].Selected)
+                {
+                    string selectedItem1 = ListBox2.Items[i].Value;
+                    //insert command
+                    Response.Write(selectedItem1);
+                }
+            }
+        }
+
+
+            //SqlCommand insert_mem;
+            //string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            //SqlConnection con1 = new SqlConnection(cs1);
+            //con1.Open();
+            //insert_mem = new SqlCommand("INSERT INTO MemberMaster (MemberName,MemberDesc,Address1,Address2,PinCode,Contact1,Contact2,Contact3,EmailID,LoginID,LoginPass) VALUES(@MemberName,@MemberDesc,@Address1,@Address2,@PinCode,@Contact1,@Contact2,@Contact3,@EmailID,@LoginID,@LoginPass)", con1);
+            //insert_mem.Parameters.Add("@MemberName", t_mem_name.Text);
+            //insert_mem.Parameters.Add("@MemberDesc", t_mem_desc.Text);
+            //insert_mem.Parameters.Add("@Address1", t_mem_add1.Text);
+            //insert_mem.Parameters.Add("@Address2", t_mem_add2.Text);
+            //insert_mem.Parameters.Add("@PinCode", t_mem_pin.Text);
+            //insert_mem.Parameters.Add("@Contact1", t_mem_con1.Text);
+            //insert_mem.Parameters.Add("@Contact2", t_mem_con2.Text);
+            //insert_mem.Parameters.Add("@Contact3", t_mem_con3.Text);
+            //insert_mem.Parameters.Add("@EmailID", t_mem_email.Text);
+            //insert_mem.Parameters.Add("@LoginID", t_mem_login.Text);
+            //insert_mem.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
+            //if ((con1.State & ConnectionState.Open) > 0)
+            //{
+            //    //Response.Write("Connection OK!");
+            //    int i = insert_mem.ExecuteNonQuery();
+            //    if (i != 0)
+            //    {
+            //        // Response.Write(i);
+            //        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
+            //    }
+            //    else
+            //    {
+            //        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+            //    }
+            //}
+            //else
+            //{
+            //    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+            //}
+            //con1.Close();
+            
+    }
 }
