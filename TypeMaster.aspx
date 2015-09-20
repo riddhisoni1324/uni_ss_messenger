@@ -83,20 +83,19 @@
                         <asp:Label ID="l_type_desc" runat="server" Text="Type Desc"></asp:Label>
                     </td>
                     <td>
-                        &nbsp;&nbsp;<asp:TextBox ID="t_type_desc" name="txtFacultyName" runat="server" BorderStyle="Solid"
-                            BorderWidth="1"></asp:TextBox>
+                        &nbsp;&nbsp;<asp:TextBox ID="t_type_desc" name="txtFacultyName" runat="server"  CssClass="input_dim"></asp:TextBox>
                         &nbsp;&nbsp;&nbsp;&nbsp;
-                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
-                            ErrorMessage="*This Field is required" ControlToValidate="t_type_desc" 
-                            ForeColor="Red" ValidationGroup="insert"></asp:RequiredFieldValidator>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="*This Field is required"
+                            ControlToValidate="t_type_desc" ForeColor="Red" ValidationGroup="insert"></asp:RequiredFieldValidator>
                     </td>
                 </tr>
                 <tr>
                     <td style="height: 65px; width: 15%">
                     </td>
                     <td class="style1">
-                        &nbsp;&nbsp;&nbsp;<asp:Button ID="Button1" runat="server" Text="Save" Width="100px"
-                            CssClass="btn btn-primary btn-large" Font-Bold="True" OnClick="btnSave_Click" ValidationGroup="insert" />&nbsp;
+                        &nbsp;&nbsp;&nbsp;<asp:Button ID="Button1" runat="server" Text="Add Type" Width="100px"
+                            CssClass="btn btn-primary btn-large" Font-Bold="True" OnClick="btnSave_Click"
+                            ValidationGroup="insert" />&nbsp;
                         <asp:Button ID="t_back" runat="server" OnClick="Button3_Click" Text="Back" Width="100px"
                             Font-Bold="True" />
                     </td>

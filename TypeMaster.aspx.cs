@@ -10,19 +10,16 @@ using System.Data;
 using System.Collections;
 public partial class TypeMaster : System.Web.UI.Page
 {
-    SqlDataAdapter dadapter;
-    DataSet dset;
-    PagedDataSource adsource;
+    SqlDataAdapter dadapter; DataSet dset; PagedDataSource adsource;
     string connstring = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-    int pos;
-    SqlDataReader dr1;
-    ArrayList arrName = new ArrayList();
+    int pos; SqlDataReader dr1; ArrayList arrName = new ArrayList();
     protected void Page_Load(object sender, EventArgs e)
     {
-        
+
         if (!IsPostBack)
         {
             MultiView1.SetActiveView(View1);
+
             this.ViewState["vs"] = 0;
         }
         pos = (int)this.ViewState["vs"];
@@ -33,23 +30,24 @@ public partial class TypeMaster : System.Web.UI.Page
         SqlCommand cmd = new SqlCommand();
         cmd.CommandText = "Select upper(typedesc) as typedesc from TypeMaster";
         cmd.Connection = con;
-        try{
+        try
+        {
             dr1 = cmd.ExecuteReader();
             if (dr1 != null)
                 while (dr1.Read())
                 {
                     //fill arraylist
                     arrName.Add(dr1["TypeDesc"]);
-
-                     Response.Write(dr1["TypeDesc"]);
+                    //Response.Write(dr1["TypeDesc"]);
 
                 }
         }
-        finally{
+        finally
+        {
             con.Close();
         }
 
-        
+
     }
     public void databind()
     {
@@ -116,13 +114,15 @@ public partial class TypeMaster : System.Web.UI.Page
         SqlDataReader rdr;
         rdr = cmd.ExecuteReader();
         int j = 0;
-        if (rdr != null){
-            while (rdr.Read()){
+        if (rdr != null)
+        {
+            while (rdr.Read())
+            {
                 j++;
                 t_type_id.Text = rdr.GetDecimal(0).ToString();
                 t_type_desc.Text = rdr.GetString(1);
             }
-        
+
         }
         t_type_id.Enabled = false;
         databind();
@@ -133,42 +133,49 @@ public partial class TypeMaster : System.Web.UI.Page
     protected void btnSave_Click(object sender, EventArgs e)
     {
         //--if it is in "insert" mode
-        if (t_type_id.Text == "fl"){
+        if (t_type_id.Text == "fl")
+        {
             SqlCommand insert_type;
             string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con1 = new SqlConnection(cs1);
             con1.Open();
             string n = t_type_desc.Text.ToUpper().Trim();
-            Response.Write("entered value s "+n);
+            //Response.Write("entered value s " + n);
             if (arrName.Contains(n))
             {
                 ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type is already added.');", true);
                 MultiView1.SetActiveView(View1);
             }
-            else { 
-            insert_type = new SqlCommand("INSERT INTO TypeMaster (TypeDesc) VALUES(@TypeDesc)", con1);
-            insert_type.Parameters.Add("@TypeDesc", t_type_desc.Text);
-            if ((con1.State & ConnectionState.Open) > 0){
-                //Response.Write("Connection OK!");
-                int i = insert_type.ExecuteNonQuery();
-                if (i != 0){
-                    Response.Write(i);
-                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
+            else
+            {
+                insert_type = new SqlCommand("INSERT INTO TypeMaster (TypeDesc) VALUES(@TypeDesc)", con1);
+                insert_type.Parameters.Add("@TypeDesc", t_type_desc.Text);
+                if ((con1.State & ConnectionState.Open) > 0)
+                {
+                    //Response.Write("Connection OK!");
+                    int i = insert_type.ExecuteNonQuery();
+                    if (i != 0)
+                    {
+                       // Response.Write(i);
+                        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
+                    }
+                    else
+                    {
+                        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                    }
                 }
-                else {
+                else
+                {
                     ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
                 }
-            }
-            else{
-                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-           }
-            con1.Close();
-            databind();
-            MultiView1.SetActiveView(View1);
+                con1.Close();
+                databind();
+                MultiView1.SetActiveView(View1);
             }
         }
         //--if it is in "update" mode
-        else{
+        else
+        {
             string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             con.Open();
@@ -176,16 +183,21 @@ public partial class TypeMaster : System.Web.UI.Page
             SqlCommand cmd = new SqlCommand("update TypeMaster set TypeDesc=@TypeDesc where TypeId=@TypeId", con);
             cmd.Parameters.Add("@TypeId", t_type_id.Text);
             cmd.Parameters.Add("@Typedesc", t_type_desc.Text);
-            if ((con.State & ConnectionState.Open) > 0){
-                Response.Write("Connection OK!");
+            if ((con.State & ConnectionState.Open) > 0)
+            {
+                //Response.Write("Connection OK!");
                 int i = cmd.ExecuteNonQuery();
-                if (i != 0){
-                    Response.Write(i);
-                    Response.Write("row updated");
+                if (i != 0)
+                {
+                    //Response.Write(i);
+                    //Response.Write("row updated");
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Updated Succesfully.');", true);
                     con.Close();
                 }
-                else{
-                    Response.Write("row not updated");
+                else
+                {
+                    //Response.Write("row not updated");
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
                 }
 
             }

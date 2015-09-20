@@ -9,75 +9,27 @@ using System.Data;
 
 public partial class Categorymaster : System.Web.UI.Page
 {
-    SqlCommand insert_cat;
+    SqlCommand insert_cat; int id = 0;
     SqlDataAdapter dadapter;
-    DataSet dset;
+    DataSet dset; string t_id; int c_id = 0;
     PagedDataSource adsource;
     string connstring = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
     int pos;
-   
+
     protected void Page_Load(object sender, EventArgs e)
     {
-        for (int o = 0; o < 5; o++)
-        {
-            ListItem li = new ListItem();
-            li.Text = "hii";
-            li.Value = "hello";
-            DropDiwnList1.Items.Add(li);
-        }
+
         if (!IsPostBack)
         {
+            MultiView1.SetActiveView(View1);
             this.ViewState["vs"] = 0;
-
         }
         pos = (int)this.ViewState["vs"];
         databind();
-    }
-    protected void DropDownList2_SelectedIndexChanged(object sender, EventArgs e)
-    {
-        //Response.Write("second" + DropDownList2.SelectedItem.Value +" ");
-    }
-   
-      
-    protected void btn_add_cat(object sender, EventArgs e)
-    {
-        var s = DropDownList2.SelectedItem.Value;
-        string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-        SqlConnection con1 = new SqlConnection(cs1);
-        con1.Open();
-        insert_cat = new SqlCommand("INSERT INTO Categorymaster (TypeID,CategoryDesc,UpdatedBy) VALUES(@TypeID,@CategoryDesc,@UpdatedBy)", con1);
-        insert_cat.Parameters.Add("@TypeId", s);
-        insert_cat.Parameters.Add("@CategoryDesc", t_cat_desc.Text);
-        insert_cat.Parameters.Add("@UpdatedBy", t_cat_update.Text);
-        if ((con1.State & ConnectionState.Open) > 0)
-        {
-            //Response.Write("Connection OK!");
-            int i = insert_cat.ExecuteNonQuery();
-            if (i != 0)
-            {
-                Response.Write(i);
-                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Category Added Succesfully.');", true);
-                //  Response.Write("row inserted");
-            }
-            else
-            {
-                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-                //  Response.Write("row not inserted");
-            }
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-            //Response.Write("not conncted");
-        }
 
-        t_cat_desc.Text = " ";
-        t_cat_update.Text = "";
-
-        con1.Close();
-       
-        Response.Write("selected type is" + s);
     }
+
+
 
     public void databind()
     {
@@ -86,7 +38,7 @@ public partial class Categorymaster : System.Web.UI.Page
         adsource = new PagedDataSource();
         dadapter.Fill(dset);
         adsource.DataSource = dset.Tables[0].DefaultView;
-        adsource.PageSize = 5;
+        adsource.PageSize = 25;
         adsource.AllowPaging = true;
         adsource.CurrentPageIndex = pos;
         btnfirst.Enabled = !adsource.IsFirstPage;
@@ -127,9 +79,13 @@ public partial class Categorymaster : System.Web.UI.Page
 
     protected void Edit_Command(object source, DataListCommandEventArgs e)
     {
+        MultiView1.SetActiveView(View2);
+        DropDownList2.Enabled = false;
+        h_id.Text = "no";
         int ID = Convert.ToInt32(e.CommandArgument);
+        id = ID;
 
-        Response.Write("hello efit clicked" + ID + "..");
+        //Response.Write("hello efit clicked" + ID + "..");
         //btnBack.Text = "Cancel";
         string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
         SqlConnection con1 = new SqlConnection(cs1);
@@ -137,8 +93,7 @@ public partial class Categorymaster : System.Web.UI.Page
 
         SqlCommand cmd = new SqlCommand();
 
-        // SqlCommand cmd = new SqlCommand("SELECT * FROM TypeMaster where typeid=1",con1);
-        cmd.CommandText = "SELECT * FROM CategoryMaster where CategoryId=@CategoryId ";
+        cmd.CommandText = "select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId where CategoryId=@CategoryId ";
         cmd.Parameters.Add("@CategoryId", ID);
 
 
@@ -151,15 +106,17 @@ public partial class Categorymaster : System.Web.UI.Page
             while (rdr.Read())
             {
                 j++;
-                TextBox1.Text = rdr.GetDecimal(0).ToString();
-                TextBox2.Text = rdr.GetString(2);
-
-
-                Response.Write(TextBox1.Text + "" + TextBox2.Text);
-
+                t_cat_desc.Text = rdr.GetString(2);
+                t_id = rdr.GetDecimal(1).ToString();
+                c_id = Convert.ToInt32(t_id);
+                flag.Text = rdr.GetDecimal(0).ToString();
+                string t = rdr.GetString(7);
+                DropDownList2.ClearSelection();
+                DropDownList2.Items.FindByText(t).Selected = true;
+                //  Response.Write("tiasjdias is "+t_id +"cat is "+c_id+"type name "+t);
 
             }
-            Response.Write(" " + j + " ");
+
         }
         databind();
     }
@@ -168,38 +125,93 @@ public partial class Categorymaster : System.Web.UI.Page
 
     protected void btnSave_Click(object sender, EventArgs e)
     {
-
-        string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-
-        SqlConnection con = new SqlConnection(cs);
-        con.Open();
-        SqlCommand cmd = new SqlCommand("update CategoryMaster set CategoryDesc=@CategoryDesc where categoryId=@categoryId", con);
-        cmd.Parameters.Add("@categoryId", TextBox1.Text);
-        cmd.Parameters.Add("@CategoryDesc", TextBox2.Text);
-        if ((con.State & ConnectionState.Open) > 0)
+        if (h_id.Text == "fl")
         {
-            Response.Write("Connection OK!");
-            int i = cmd.ExecuteNonQuery();
-            if (i != 0)
+            ClientScript.RegisterStartupScript(GetType(), "alert", "alert('insert.');", true);
+            DropDownList2.Enabled = true;
+            var s = DropDownList2.SelectedItem.Value;
+            string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con1 = new SqlConnection(cs1);
+            con1.Open();
+            insert_cat = new SqlCommand("INSERT INTO Categorymaster (TypeID,CategoryDesc) VALUES(@TypeID,@CategoryDesc)", con1);
+            insert_cat.Parameters.Add("@TypeId", s);
+            insert_cat.Parameters.Add("@CategoryDesc", t_cat_desc.Text);
+
+            if ((con1.State & ConnectionState.Open) > 0)
             {
-                Response.Write(i);
-                Response.Write("row inserted");
-                con.Close();
+                int i = insert_cat.ExecuteNonQuery();
+                if (i != 0)
+                {
+                    //Response.Write(i);
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Category Added Succesfully.');", true);
+                }
+                else
+                {
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                }
             }
             else
             {
-                Response.Write("row not inserted");
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
             }
+
+            t_cat_desc.Text = " ";
+            con1.Close();
+            MultiView1.SetActiveView(View1);
+            databind();
 
         }
         else
         {
-            Response.Write("Connection no good!");
+            string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update CategoryMaster set CategoryDesc=@CategoryDesc where categoryId=@categoryId", con);
+            //Response.Write("sfsfsf is " + flag.Text+ "id is "+id);
+
+            cmd.Parameters.Add("@categoryId", flag.Text);
+            cmd.Parameters.Add("@CategoryDesc", t_cat_desc.Text);
+            if ((con.State & ConnectionState.Open) > 0)
+            {
+                //Response.Write("Connection OK!");
+                int i = cmd.ExecuteNonQuery();
+                if (i != 0)
+                {
+                    // Response.Write(i);
+                    //  Response.Write("row inserted");
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Category Updated Succesfully.');", true);
+                    con.Close();
+                }
+                else
+                {
+                    //Response.Write("row not inserted");
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                }
+
+            }
+            else
+            {
+                // Response.Write("Connection no good!");
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+            }
+            MultiView1.SetActiveView(View1);
+            databind();
         }
-        databind();
     }
 
 
 
 
+    protected void b_add_category_click(object sender, EventArgs e)
+    {
+        MultiView1.SetActiveView(View2);
+        h_id.Text = "fl";
+        t_cat_desc.Text = " ";
+        DropDownList2.Enabled = true;
+
+    }
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        MultiView1.SetActiveView(View1);
+    }
 }
