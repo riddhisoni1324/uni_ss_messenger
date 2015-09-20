@@ -40,7 +40,8 @@ public partial class TypeMaster : System.Web.UI.Page
                 {
                     //fill arraylist
                     arrName.Add(dr1["TypeDesc"]);
-                   // Response.Write(dr1["TypeDesc"]);
+
+                     Response.Write(dr1["TypeDesc"]);
 
                 }
         }
@@ -48,6 +49,7 @@ public partial class TypeMaster : System.Web.UI.Page
             con.Close();
         }
 
+        
     }
     public void databind()
     {
@@ -136,9 +138,12 @@ public partial class TypeMaster : System.Web.UI.Page
             string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con1 = new SqlConnection(cs1);
             con1.Open();
-            if (arrName.Contains(t_type_desc.Text) || arrName.Contains(t_type_desc.Text.ToUpper()))
+            string n = t_type_desc.Text.ToUpper().Trim();
+            Response.Write("entered value s "+n);
+            if (arrName.Contains(n))
             {
                 ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type is already added.');", true);
+                MultiView1.SetActiveView(View1);
             }
             else { 
             insert_type = new SqlCommand("INSERT INTO TypeMaster (TypeDesc) VALUES(@TypeDesc)", con1);
@@ -159,6 +164,7 @@ public partial class TypeMaster : System.Web.UI.Page
            }
             con1.Close();
             databind();
+            MultiView1.SetActiveView(View1);
             }
         }
         //--if it is in "update" mode
@@ -175,18 +181,16 @@ public partial class TypeMaster : System.Web.UI.Page
                 int i = cmd.ExecuteNonQuery();
                 if (i != 0){
                     Response.Write(i);
-                    Response.Write("row inserted");
+                    Response.Write("row updated");
                     con.Close();
                 }
                 else{
-                    Response.Write("row not inserted");
+                    Response.Write("row not updated");
                 }
 
             }
-            else{
-                Response.Write("Connection no good!");
-            }
             databind();
+            MultiView1.SetActiveView(View1);
         }
     }
 
