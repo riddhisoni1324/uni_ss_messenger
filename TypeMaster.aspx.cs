@@ -7,6 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using System.Data;
+using System.Collections;
 public partial class TypeMaster : System.Web.UI.Page
 {
     SqlDataAdapter dadapter;
@@ -14,49 +15,39 @@ public partial class TypeMaster : System.Web.UI.Page
     PagedDataSource adsource;
     string connstring = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
     int pos;
+    SqlDataReader dr1;
+    ArrayList arrName = new ArrayList();
     protected void Page_Load(object sender, EventArgs e)
     {
+        
         if (!IsPostBack)
         {
+            MultiView1.SetActiveView(View1);
             this.ViewState["vs"] = 0;
         }
         pos = (int)this.ViewState["vs"];
         databind();
-    }
-    protected void btn_add_type(object sender, EventArgs e)
-    {
-        SqlCommand insert_type;
-        string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-        SqlConnection con1 = new SqlConnection(cs1);
-        con1.Open();
-        insert_type = new SqlCommand("INSERT INTO TypeMaster (TypeDesc,UpdatedBy) VALUES(@TypeDesc,@UpdatedBy)", con1);
-        insert_type.Parameters.Add("@TypeDesc", t_type_desc.Text);
-        insert_type.Parameters.Add("@UpdatedBy", t_type_update.Text);
-        if ((con1.State & ConnectionState.Open) > 0)
-        {
-            //Response.Write("Connection OK!");
-            int i = insert_type.ExecuteNonQuery();
-            if (i != 0)
-            {
-                Response.Write(i);
-                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
-                //  Response.Write("row inserted");
-            }
-            else
-            {
-                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-                //  Response.Write("row not inserted");
-            }
-        }
-        else
-        {
-            ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-            //Response.Write("not conncted");
-        }
-        t_type_desc.Text = "";
-        t_type_update.Text = " ";
+        string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        SqlConnection con = new SqlConnection(cs);
+        con.Open();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "Select upper(typedesc) as typedesc from TypeMaster";
+        cmd.Connection = con;
+        try{
+            dr1 = cmd.ExecuteReader();
+            if (dr1 != null)
+                while (dr1.Read())
+                {
+                    //fill arraylist
+                    arrName.Add(dr1["TypeDesc"]);
+                   // Response.Write(dr1["TypeDesc"]);
 
-        con1.Close();
+                }
+        }
+        finally{
+            con.Close();
+        }
+
     }
     public void databind()
     {
@@ -65,7 +56,7 @@ public partial class TypeMaster : System.Web.UI.Page
         adsource = new PagedDataSource();
         dadapter.Fill(dset);
         adsource.DataSource = dset.Tables[0].DefaultView;
-        adsource.PageSize = 5;
+        adsource.PageSize = 25;
         adsource.AllowPaging = true;
         adsource.CurrentPageIndex = pos;
         btnfirst.Enabled = !adsource.IsFirstPage;
@@ -106,17 +97,15 @@ public partial class TypeMaster : System.Web.UI.Page
 
     protected void Edit_Command(object source, DataListCommandEventArgs e)
     {
+        MultiView1.SetActiveView(View2);
+        l_type_id.Visible = true;
+        t_type_id.Visible = true;
         int ID = Convert.ToInt32(e.CommandArgument);
-
-        Response.Write("hello efit clicked" + ID + "..");
-        //btnBack.Text = "Cancel";
+        t_type_id.Text = ID.ToString();
         string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
         SqlConnection con1 = new SqlConnection(cs1);
         con1.Open();
-
         SqlCommand cmd = new SqlCommand();
-
-        // SqlCommand cmd = new SqlCommand("SELECT * FROM TypeMaster where typeid=1",con1);
         cmd.CommandText = "SELECT * FROM TypeMaster where TypeId=@TypeId";
         cmd.Parameters.Add("@TypeId", ID);
 
@@ -125,58 +114,95 @@ public partial class TypeMaster : System.Web.UI.Page
         SqlDataReader rdr;
         rdr = cmd.ExecuteReader();
         int j = 0;
-        if (rdr != null)
-        {
-            while (rdr.Read())
-            {
+        if (rdr != null){
+            while (rdr.Read()){
                 j++;
-                TextBox1.Text = rdr.GetDecimal(0).ToString();
-                TextBox2.Text = rdr.GetString(1);
-
-
-                Response.Write(TextBox1.Text + "" + TextBox2.Text);
-
-
+                t_type_id.Text = rdr.GetDecimal(0).ToString();
+                t_type_desc.Text = rdr.GetString(1);
             }
-            Response.Write(" " + j + " ");
+        
         }
+        t_type_id.Enabled = false;
         databind();
     }
 
-   
 
-     protected void btnSave_Click(object sender, EventArgs e)
+
+    protected void btnSave_Click(object sender, EventArgs e)
     {
-
-        string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-
-        SqlConnection con = new SqlConnection(cs);
-        con.Open();
-        SqlCommand cmd = new SqlCommand("update TypeMaster set TypeDesc=@TypeDesc where TypeId=@TypeId", con);
-        cmd.Parameters.Add("@TypeId", TextBox1.Text);
-        cmd.Parameters.Add("@Typedesc", TextBox2.Text);
-        if ((con.State & ConnectionState.Open) > 0)
-        {
-            Response.Write("Connection OK!");
-            int i = cmd.ExecuteNonQuery();
-            if (i != 0)
+        //--if it is in "insert" mode
+        if (t_type_id.Text == "fl"){
+            SqlCommand insert_type;
+            string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con1 = new SqlConnection(cs1);
+            con1.Open();
+            if (arrName.Contains(t_type_desc.Text) || arrName.Contains(t_type_desc.Text.ToUpper()))
             {
-                Response.Write(i);
-                Response.Write("row inserted");
-                con.Close();
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type is already added.');", true);
             }
-            else
-            {
-                Response.Write("row not inserted");
+            else { 
+            insert_type = new SqlCommand("INSERT INTO TypeMaster (TypeDesc) VALUES(@TypeDesc)", con1);
+            insert_type.Parameters.Add("@TypeDesc", t_type_desc.Text);
+            if ((con1.State & ConnectionState.Open) > 0){
+                //Response.Write("Connection OK!");
+                int i = insert_type.ExecuteNonQuery();
+                if (i != 0){
+                    Response.Write(i);
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
+                }
+                else {
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                }
             }
+            else{
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+           }
+            con1.Close();
+            databind();
+            }
+        }
+        //--if it is in "update" mode
+        else{
+            string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            con.Open();
 
+            SqlCommand cmd = new SqlCommand("update TypeMaster set TypeDesc=@TypeDesc where TypeId=@TypeId", con);
+            cmd.Parameters.Add("@TypeId", t_type_id.Text);
+            cmd.Parameters.Add("@Typedesc", t_type_desc.Text);
+            if ((con.State & ConnectionState.Open) > 0){
+                Response.Write("Connection OK!");
+                int i = cmd.ExecuteNonQuery();
+                if (i != 0){
+                    Response.Write(i);
+                    Response.Write("row inserted");
+                    con.Close();
+                }
+                else{
+                    Response.Write("row not inserted");
+                }
+
+            }
+            else{
+                Response.Write("Connection no good!");
+            }
+            databind();
         }
-        else
-        {
-            Response.Write("Connection no good!");
-        }
-        databind();
     }
 
 
+    protected void b_add_type_Click(object sender, EventArgs e)
+    {
+        MultiView1.SetActiveView(View2);
+        t_type_id.Text = "fl";
+        t_type_id.Visible = false;
+        l_type_id.Visible = false;
+        t_type_desc.Text = " ";
+
+
+    }
+    protected void Button3_Click(object sender, EventArgs e)
+    {
+        MultiView1.SetActiveView(View1);
+    }
 }
