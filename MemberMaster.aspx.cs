@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
+using System.Collections;
 public partial class MemberMaster : System.Web.UI.Page
 {
     SqlCommand cmd, insert_otp_cmd; string cs; SqlDataReader rdr; int j = 0; int OTP; string get_OTP, set_OTP;
@@ -15,12 +16,19 @@ public partial class MemberMaster : System.Web.UI.Page
         //ListBox1.SelectedValue = "1";
         //ListBox1.SelectedValue = "2";
         //ListBox1.SelectAll();
-        for (int i = 0; i < 2; i++) {
-            ListBox1.SelectedValue = i.ToString();
-            
-        }
-       
-         
+        //for (int i = 0; i < ListBox1.Items.Count; i++)
+        //{
+        //    ListBox1.Items[i].Selected = true;
+
+        //}
+        //ListBox1.Items[1].Selected = true;
+        //ListBox1.Items[2].Selected = true;    
+        //IEnumerator ir = ListBox1.Items.GetEnumerator();
+        //while (ir.MoveNext()) {
+        //    ListItem li = (ListItem)ir.Current;
+        //    li.Selected = true;
+        //}
+
     
     }
     protected void Button2_Click(object sender, EventArgs e)
@@ -73,30 +81,19 @@ public partial class MemberMaster : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
-        if (ListBox1.Items.Count > 0)
-        {
-            for (int i = 0; i < ListBox1.Items.Count; i++)
-            {
-                if (ListBox1.Items[i].Selected)
-                {
-                    string selectedItem = ListBox1.Items[i].Value;
-                }
-            }
-        }
-
         if (ListBox2.Items.Count > 0)
         {
             for (int i = 0; i < ListBox2.Items.Count; i++)
             {
                 if (ListBox2.Items[i].Selected)
                 {
-                    string selectedItem1 = ListBox2.Items[i].Value;
+                    string c_id = ListBox2.Items[i].Value;
 
                     string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                     SqlConnection con = new SqlConnection(cs);
                     con.Open();
                     cmd = new SqlCommand("select * from categorymaster where categoryid=@cid", con);
-                    cmd.Parameters.Add("@cid", selectedItem1);
+                    cmd.Parameters.Add("@cid", c_id);
                     cmd.Connection = con;
                     rdr = cmd.ExecuteReader();
 
@@ -104,8 +101,35 @@ public partial class MemberMaster : System.Web.UI.Page
                     {
                         while (rdr.Read())
                         {
-                            int c_id = Convert.ToInt32(rdr.GetDecimal(1));
-                            Response.Write("cat is :" + selectedItem1 +"typeid : "+c_id);
+                            int t_id = Convert.ToInt32(rdr.GetDecimal(1));
+                            Response.Write("cat is :" + c_id +"typeid : "+t_id);
+                            SqlCommand insert_mem_type;
+                            string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                            SqlConnection con1 = new SqlConnection(cs1);
+                            con1.Open();
+                            insert_mem_type = new SqlCommand("INSERT INTO MemberType (MemberID,TypeID,CategoryID) VALUES(@LoginID,@TypeID,@CategoryID)", con1);
+                            insert_mem_type.Parameters.Add("@LoginID", t_mem_login.Text);
+                            insert_mem_type.Parameters.Add("@TypeID", t_id);
+                            insert_mem_type.Parameters.Add("@CategoryID", c_id);
+                            if ((con1.State & ConnectionState.Open) > 0)
+                            {
+                                //Response.Write("Connection OK!");
+                                int i1 = insert_mem_type.ExecuteNonQuery();
+                                if (i1 != 0)
+                                {
+                                    // Response.Write(i);
+                                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('MemberType Added Succesfully.');", true);
+                                }
+                                else
+                                {
+                                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                                }
+                            }
+                            else
+                            {
+                                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                            }
+                            con1.Close();
 
                         }
                     }
@@ -116,41 +140,56 @@ public partial class MemberMaster : System.Web.UI.Page
         }
 
 
-            //SqlCommand insert_mem;
-            //string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-            //SqlConnection con1 = new SqlConnection(cs1);
-            //con1.Open();
-            //insert_mem = new SqlCommand("INSERT INTO MemberMaster (MemberName,MemberDesc,Address1,Address2,PinCode,Contact1,Contact2,Contact3,EmailID,LoginID,LoginPass) VALUES(@MemberName,@MemberDesc,@Address1,@Address2,@PinCode,@Contact1,@Contact2,@Contact3,@EmailID,@LoginID,@LoginPass)", con1);
-            //insert_mem.Parameters.Add("@MemberName", t_mem_name.Text);
-            //insert_mem.Parameters.Add("@MemberDesc", t_mem_desc.Text);
-            //insert_mem.Parameters.Add("@Address1", t_mem_add1.Text);
-            //insert_mem.Parameters.Add("@Address2", t_mem_add2.Text);
-            //insert_mem.Parameters.Add("@PinCode", t_mem_pin.Text);
-            //insert_mem.Parameters.Add("@Contact1", t_mem_con1.Text);
-            //insert_mem.Parameters.Add("@Contact2", t_mem_con2.Text);
-            //insert_mem.Parameters.Add("@Contact3", t_mem_con3.Text);
-            //insert_mem.Parameters.Add("@EmailID", t_mem_email.Text);
-            //insert_mem.Parameters.Add("@LoginID", t_mem_login.Text);
-            //insert_mem.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
-            //if ((con1.State & ConnectionState.Open) > 0)
-            //{
-            //    //Response.Write("Connection OK!");
-            //    int i = insert_mem.ExecuteNonQuery();
-            //    if (i != 0)
-            //    {
-            //        // Response.Write(i);
-            //        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
-            //    }
-            //    else
-            //    {
-            //        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-            //    }
-            //}
-            //else
-            //{
-            //    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
-            //}
-            //con1.Close();
+        SqlCommand insert_mem;
+        string cs12 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        SqlConnection con12 = new SqlConnection(cs12);
+        con12.Open();
+        insert_mem = new SqlCommand("INSERT INTO MemberMaster (MemberName,MemberDesc,Address1,Address2,PinCode,Contact1,Contact2,Contact3,EmailID,LoginID,LoginPass) VALUES(@MemberName,@MemberDesc,@Address1,@Address2,@PinCode,@Contact1,@Contact2,@Contact3,@EmailID,@LoginID,@LoginPass)", con12);
+        insert_mem.Parameters.Add("@MemberName", t_mem_name.Text);
+        insert_mem.Parameters.Add("@MemberDesc", t_mem_desc.Text);
+        insert_mem.Parameters.Add("@Address1", t_mem_add1.Text);
+        insert_mem.Parameters.Add("@Address2", t_mem_add2.Text);
+        insert_mem.Parameters.Add("@PinCode", t_mem_pin.Text);
+        insert_mem.Parameters.Add("@Contact1", t_mem_con1.Text);
+        insert_mem.Parameters.Add("@Contact2", t_mem_con2.Text);
+        insert_mem.Parameters.Add("@Contact3", t_mem_con3.Text);
+        insert_mem.Parameters.Add("@EmailID", t_mem_email.Text);
+        insert_mem.Parameters.Add("@LoginID", t_mem_login.Text);
+        insert_mem.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
+        if ((con12.State & ConnectionState.Open) > 0)
+        {
+             int i = insert_mem.ExecuteNonQuery();
+            if (i != 0)
+            {
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Member Added Succesfully.');", true);
+            }
+            else
+            {
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+            }
+        }
+        else
+        {
+            ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+        }
+        con12.Close();
             
+    }
+    protected void Button2_Click1(object sender, EventArgs e)
+    {
+        //IEnumerator ir = ListBox1.Items.GetEnumerator();
+        //while (ir.MoveNext())
+        //{
+        //    ListItem li = (ListItem)ir.Current;
+        //   // Response.Write(" "+li.Text+"."+li.Value);
+        //    if (li.Value == "1" || li.Value == "2" )
+        //    {
+        //        li.Selected = true;
+        //        Response.Write("......."+li.Text);
+              
+        //    }
+
+        //}
+
     }
 }

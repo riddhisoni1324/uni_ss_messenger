@@ -28,6 +28,8 @@
         <tr>
             <td class="table_wid">
                 Type
+                <asp:Button ID="Button2" runat="server" onclick="Button2_Click1" Text="Button" 
+                    Visible="False" />
             </td>
             <td class="table_wid">
                 <asp:ListBox ID="ListBox1" runat="server" DataSourceID="SqlDataSource2" DataTextField="TypeDesc"
