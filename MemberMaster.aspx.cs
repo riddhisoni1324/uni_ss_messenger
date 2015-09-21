@@ -38,7 +38,7 @@ public partial class MemberMaster : System.Web.UI.Page
         string message = "";
         foreach (ListItem item in ListBox1.Items)
         {
-            Response.Write("h");
+            
 
             if (item.Selected)
             {
@@ -49,7 +49,7 @@ public partial class MemberMaster : System.Web.UI.Page
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
                 //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
-                cmd = new SqlCommand("select * from categorymaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId where CategoryMaster.TypeId=@tid", con);
+                cmd = new SqlCommand("select * from categorymaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId where categorymaster.typeid=@tid ", con);
                 cmd.Parameters.Add("@tid", item.Value);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
@@ -61,11 +61,16 @@ public partial class MemberMaster : System.Web.UI.Page
                 {
                     while (rdr.Read())
                     {
-                        j++;
+                        //j++;
                         li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
                         li.Value = rdr[0].ToString();
                         Response.Write(li.Text + "\n");
                         ListBox2.Items.Add(li.Text);
+                        //ListBox2.DataSource = dt;
+                        //ListBox2.DataTextField = "categorydesc";
+
+                        //ListBox2.DataValueField = "categoryid";
+                        //ListBox2.DataBind();
                     }
                 }
                 con.Close();
@@ -87,26 +92,26 @@ public partial class MemberMaster : System.Web.UI.Page
                     if (ListBox2.Items[i].Selected)
                     {
                         string selectedItem1 = ListBox2.Items[i].Value;
-                        Response.Write(selectedItem1);
+                        Response.Write("val is "+selectedItem1);
 
-                        //string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-                        //SqlConnection con = new SqlConnection(cs);
-                        //con.Open();
-                        //cmd = new SqlCommand("select * from categorymaster where categoryid=@cid", con);
-                        //cmd.Parameters.Add("@cid", selectedItem1);
-                        //cmd.Connection = con;
-                        //rdr = cmd.ExecuteReader();
+                        string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                        SqlConnection con = new SqlConnection(cs);
+                        con.Open();
+                        cmd = new SqlCommand("select * from categorymaster where categoryid=@cid", con);
+                        cmd.Parameters.Add("@cid", selectedItem1);
+                        cmd.Connection = con;
+                        rdr = cmd.ExecuteReader();
 
                         //if (rdr != null)
                         //{
                         //    while (rdr.Read())
                         //    {
-                        //        int c_id = Convert.ToInt32(rdr.GetDecimal(1));
+                        //      //  int c_id = Convert.ToInt32(rdr.GetDecimal(1));
                         //        Response.Write("cat is :" + selectedItem1 + "typeid : " + c_id);
 
                         //    }
                         //}
-                        //con.Close();
+                        con.Close();
 
                     }
                 }
