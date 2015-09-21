@@ -62,13 +62,13 @@ public partial class MemberMaster : System.Web.UI.Page
                     while (rdr.Read())
                     {
                         //j++;
-                        li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
+                     //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
+                        li.Text = rdr.GetString(2);
                         li.Value = rdr[0].ToString();
                         Response.Write(li.Text + "\n");
                         ListBox2.Items.Add(li.Text);
                         //ListBox2.DataSource = dt;
                         //ListBox2.DataTextField = "categorydesc";
-
                         //ListBox2.DataValueField = "categoryid";
                         //ListBox2.DataBind();
                     }
@@ -97,20 +97,21 @@ public partial class MemberMaster : System.Web.UI.Page
                         string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                         SqlConnection con = new SqlConnection(cs);
                         con.Open();
-                        cmd = new SqlCommand("select * from categorymaster where categoryid=@cid", con);
+                        cmd = new SqlCommand("select * from categorymaster where categorydesc=@cid", con);
                         cmd.Parameters.Add("@cid", selectedItem1);
                         cmd.Connection = con;
                         rdr = cmd.ExecuteReader();
 
-                        //if (rdr != null)
-                        //{
-                        //    while (rdr.Read())
-                        //    {
-                        //      //  int c_id = Convert.ToInt32(rdr.GetDecimal(1));
-                        //        Response.Write("cat is :" + selectedItem1 + "typeid : " + c_id);
+                        if (rdr != null)
+                        {
+                            while (rdr.Read())
+                            {
+                                //  int c_id = Convert.ToInt32(rdr.GetDecimal(1));
+                                int c_id = Convert.ToInt32(rdr.GetDecimal(0));
+                                Response.Write("cat is :" + selectedItem1 + "typeid : " + c_id);
 
-                        //    }
-                        //}
+                            }
+                        }
                         con.Close();
 
                     }

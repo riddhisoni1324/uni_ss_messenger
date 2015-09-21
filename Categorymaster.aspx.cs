@@ -130,12 +130,14 @@ public partial class Categorymaster : System.Web.UI.Page
             ClientScript.RegisterStartupScript(GetType(), "alert", "alert('insert.');", true);
             DropDownList2.Enabled = true;
             var s = DropDownList2.SelectedItem.Value;
+            string s1 = DropDownList2.SelectedItem.Text;
+            //Response.Write(t_cat_desc.Text+s1);
             string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con1 = new SqlConnection(cs1);
             con1.Open();
             insert_cat = new SqlCommand("INSERT INTO Categorymaster (TypeID,CategoryDesc) VALUES(@TypeID,@CategoryDesc)", con1);
             insert_cat.Parameters.Add("@TypeId", s);
-            insert_cat.Parameters.Add("@CategoryDesc", t_cat_desc.Text);
+            insert_cat.Parameters.Add("@CategoryDesc", t_cat_desc.Text + " -" + s1);
 
             if ((con1.State & ConnectionState.Open) > 0)
             {
