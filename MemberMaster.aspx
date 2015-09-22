@@ -38,6 +38,8 @@
                         <tr>
                             <td style="width: 10%">
                                 &nbsp;<%# Eval("MemberName") %></td>
+                                <td style="width: 10%">
+                                &nbsp;<%# Eval("MemberDesc") %></td>
                             <td style="width: 400px">
                                 &nbsp;<%# Eval("Address1")%></td>
                             <td style="width: 400px">
@@ -53,6 +55,7 @@
                                     OnClientClick="return confirm('Are you Sure to Delete Selected Record?')" Visible="true"></asp:LinkButton>
                             </td>
                         </tr>
+                        
                     </table>
                 </ItemTemplate>
             </asp:DataList>

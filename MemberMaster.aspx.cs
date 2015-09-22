@@ -13,7 +13,7 @@ public partial class MemberMaster : System.Web.UI.Page
     SqlDataAdapter dadapter; DataSet dset; PagedDataSource adsource;
     string connstring = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
     int pos; SqlDataReader dr1; ArrayList arrName = new ArrayList();
-    
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!IsPostBack)
@@ -29,7 +29,7 @@ public partial class MemberMaster : System.Web.UI.Page
     {
         Response.Redirect("TypeMaster.aspx");
     }
-    
+
     protected void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
         ListBox2.Items.Clear();
@@ -38,7 +38,7 @@ public partial class MemberMaster : System.Web.UI.Page
         string message = "";
         foreach (ListItem item in ListBox1.Items)
         {
-            
+
 
             if (item.Selected)
             {
@@ -62,7 +62,7 @@ public partial class MemberMaster : System.Web.UI.Page
                     while (rdr.Read())
                     {
                         //j++;
-                     //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
+                        //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
                         li.Text = rdr.GetString(2);
                         li.Value = rdr[0].ToString();
                         Response.Write(li.Text + "\n");
@@ -92,7 +92,7 @@ public partial class MemberMaster : System.Web.UI.Page
                     if (ListBox2.Items[i].Selected)
                     {
                         string selectedItem1 = ListBox2.Items[i].Value;
-                        Response.Write("val is "+selectedItem1);
+                        Response.Write("val is " + selectedItem1);
 
                         string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                         SqlConnection con = new SqlConnection(cs);
@@ -124,6 +124,7 @@ public partial class MemberMaster : System.Web.UI.Page
             SqlConnection con1 = new SqlConnection(cs1);
             con1.Open();
             insert_mem = new SqlCommand("INSERT INTO MemberMaster (MemberName,MemberDesc,Address1,Address2,PinCode,Contact1,Contact2,Contact3,EmailID,LoginID,LoginPass) VALUES(@MemberName,@MemberDesc,@Address1,@Address2,@PinCode,@Contact1,@Contact2,@Contact3,@EmailID,@LoginID,@LoginPass)", con1);
+            // insert_mem.Parameters.AddWithValue("@MemberName", t_mem_name.Text);
             insert_mem.Parameters.Add("@MemberName", t_mem_name.Text);
             insert_mem.Parameters.Add("@MemberDesc", t_mem_desc.Text);
             insert_mem.Parameters.Add("@Address1", t_mem_add1.Text);
@@ -155,11 +156,54 @@ public partial class MemberMaster : System.Web.UI.Page
             }
             con1.Close();
         }
-        else {
+        else
+        {
 
             ClientScript.RegisterStartupScript(GetType(), "alert", "alert('update.');", true);
+            string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            con.Open();
+            SqlCommand cmd = new SqlCommand("update MemberMaster set MemberName=@MemberName,memberdesc=@memberdesc,Address1=@Address1,Address2=@Address2,PinCode=@PinCode,Contact1=@Contact1,Contact2=@Contact2,Contact3=@Contact3,EmailID=@EmailID,LoginPass=@LoginPass where LoginId=@LoginId", con);
+           
+           
+            cmd.Parameters.Add("@MemberName", t_mem_name.Text);
+            cmd.Parameters.Add("@MemberDesc", t_mem_desc.Text);
+            cmd.Parameters.Add("@Address1", t_mem_add1.Text);
+            cmd.Parameters.Add("@Address2", t_mem_add2.Text);
+            cmd.Parameters.Add("@PinCode", t_mem_pin.Text);
+            cmd.Parameters.Add("@Contact1", t_mem_con1.Text);
+            cmd.Parameters.Add("@Contact2", t_mem_con2.Text);
+            cmd.Parameters.Add("@Contact3", t_mem_con3.Text);
+            cmd.Parameters.Add("@EmailID", t_mem_email.Text);
+            cmd.Parameters.Add("@LoginID", t_mem_login.Text);
+            cmd.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
+            if ((con.State & ConnectionState.Open) > 0)
+            {
+                //Response.Write("Connection OK!");
+                int i = cmd.ExecuteNonQuery();
+                if (i != 0)
+                {
+                    // Response.Write(i);
+                    //  Response.Write("row inserted");
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('member Updated Succesfully.');", true);
+                    con.Close();
+                }
+                else
+                {
+                    //Response.Write("row not inserted");
+                    ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+                }
+
+            }
+            else
+            {
+                // Response.Write("Connection no good!");
+                ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
+            }
+            MultiView1.SetActiveView(View1);
+            databind();
         }
-            
+
     }
     protected void Button2_Click1(object sender, EventArgs e)
     {
@@ -172,7 +216,7 @@ public partial class MemberMaster : System.Web.UI.Page
         //    {
         //        li.Selected = true;
         //        Response.Write("......."+li.Text);
-              
+
         //    }
 
         //}
@@ -186,40 +230,65 @@ public partial class MemberMaster : System.Web.UI.Page
     {
         MultiView1.SetActiveView(View2);
         h_id.Text = "fl";
+        t_mem_name.Text = "";
+        t_mem_desc.Text = "";
+        t_mem_add1.Text = "";
+        t_mem_add2.Text = "";
+        t_mem_pin.Text = "";
+        t_mem_con1.Text = "";
+        t_mem_con2.Text = "";
+        t_mem_con3.Text = "";
+        t_mem_email.Text = "";
+        t_mem_login.Text = "";
+        t_mem_loginpass.Text = "";
+        t_mem_login.Text = "";
+
     }
 
     protected void Edit_Command(object source, DataListCommandEventArgs e)
     {
         MultiView1.SetActiveView(View2);
         h_id.Text = "no";
-        //l_type_id.Visible = true;
-        //t_type_id.Visible = true;
-        //int ID = Convert.ToInt32(e.CommandArgument);
-        //t_type_id.Text = ID.ToString();
-        //string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-        //SqlConnection con1 = new SqlConnection(cs1);
-        //con1.Open();
-        //SqlCommand cmd = new SqlCommand();
-        //cmd.CommandText = "SELECT * FROM TypeMaster where TypeId=@TypeId";
-        //cmd.Parameters.Add("@TypeId", ID);
+
+        int ID = Convert.ToInt32(e.CommandArgument);
+        string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        SqlConnection con1 = new SqlConnection(cs1);
+        con1.Open();
+        SqlCommand cmd = new SqlCommand();
+        cmd.CommandText = "SELECT * FROM MemberMaster where MemberId=@TypeId";
+        cmd.Parameters.Add("@TypeId", ID);
 
 
-        //cmd.Connection = con1;
-        //SqlDataReader rdr;
-        //rdr = cmd.ExecuteReader();
-        //int j = 0;
-        //if (rdr != null)
-        //{
-        //    while (rdr.Read())
-        //    {
-        //        j++;
-        //        t_type_id.Text = rdr.GetDecimal(0).ToString();
-        //        t_type_desc.Text = rdr.GetString(1);
-        //    }
+        cmd.Connection = con1;
+        SqlDataReader rdr;
+        rdr = cmd.ExecuteReader();
+        int j = 0;
+        if (rdr != null)
+        {
+            while (rdr.Read())
+            {
+                j++;
+                //    t_type_id.Text = rdr.GetDecimal(0).ToString();
+                //    t_type_desc.Text = rdr.GetString(1);
+                //
+                t_mem_name.Text = rdr.GetString(2);
+                t_mem_desc.Text = rdr.GetString(3);
+                t_mem_add1.Text = rdr.GetString(4);
+                t_mem_add2.Text = rdr.GetString(5);
+                t_mem_pin.Text = rdr.GetString(6);
+                t_mem_con1.Text = rdr.GetString(7);
+                t_mem_con2.Text = rdr.GetString(8);
+                t_mem_con3.Text = rdr.GetString(9);
+                t_mem_email.Text = rdr.GetString(10);
+                t_mem_login.Text = rdr.GetString(11);
+                t_mem_loginpass.Text = rdr.GetString(12);
+                t_mem_login.Text = rdr.GetString(11);
 
-        //}
-        //t_type_id.Enabled = false;
-        //databind();
+
+            }
+
+        }
+        databind();
     }
 
     public void databind()
