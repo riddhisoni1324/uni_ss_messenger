@@ -9,6 +9,7 @@ using System.Data.SqlClient;
 using System.Collections;
 public partial class MemberMaster : System.Web.UI.Page
 {
+
     SqlCommand cmd, insert_otp_cmd; string cs; SqlDataReader rdr; int j = 0; int OTP; string get_OTP, set_OTP;
     SqlDataAdapter dadapter; DataSet dset; PagedDataSource adsource;
     string connstring = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
@@ -111,7 +112,7 @@ public partial class MemberMaster : System.Web.UI.Page
                                 SqlConnection con2 = new SqlConnection(cs2);
                                 con2.Open();
                                 insert_mem_type = new SqlCommand("INSERT INTO Membertype (MemberId,TypeID,CategoryID) VALUES(@MemberId,@TypeID,@CategoryID)", con2);
-                                insert_mem_type.Parameters.Add("@MemberId", t_mem_login.Text);
+                                insert_mem_type.Parameters.Add("@MemberId",t_mem_code.Text);
                                 insert_mem_type.Parameters.Add("@TypeID", t_id);
                                 insert_mem_type.Parameters.Add("@CategoryID", c_id);
 
@@ -145,8 +146,8 @@ public partial class MemberMaster : System.Web.UI.Page
             string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con1 = new SqlConnection(cs1);
             con1.Open();
-            insert_mem = new SqlCommand("INSERT INTO MemberMaster (MemberName,MemberDesc,Address1,Address2,PinCode,Contact1,Contact2,Contact3,EmailID,LoginID,LoginPass) VALUES(@MemberName,@MemberDesc,@Address1,@Address2,@PinCode,@Contact1,@Contact2,@Contact3,@EmailID,@LoginID,@LoginPass)", con1);
-            // insert_mem.Parameters.AddWithValue("@MemberName", t_mem_name.Text);
+            insert_mem = new SqlCommand("INSERT INTO MemberMaster (MemberName,MemberDesc,code,Address1,Address2,PinCode,Contact1,Contact2,Contact3,EmailID,LoginID,LoginPass) VALUES(@MemberName,@MemberDesc,@code,@Address1,@Address2,@PinCode,@Contact1,@Contact2,@Contact3,@EmailID,@LoginID,@LoginPass)", con1);
+            insert_mem.Parameters.AddWithValue("@code", t_mem_code.Text);
             insert_mem.Parameters.Add("@MemberName", t_mem_name.Text);
             insert_mem.Parameters.Add("@MemberDesc", t_mem_desc.Text);
             insert_mem.Parameters.Add("@Address1", t_mem_add1.Text);
@@ -189,9 +190,9 @@ public partial class MemberMaster : System.Web.UI.Page
             string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             con.Open();
-            SqlCommand cmd = new SqlCommand("update MemberMaster set MemberName=@MemberName,memberdesc=@memberdesc,Address1=@Address1,Address2=@Address2,PinCode=@PinCode,Contact1=@Contact1,Contact2=@Contact2,Contact3=@Contact3,EmailID=@EmailID,LoginPass=@LoginPass where LoginId=@LoginId", con);
+            SqlCommand cmd = new SqlCommand("update MemberMaster set MemberName=@MemberName,memberdesc=@memberdesc,Address1=@Address1,Address2=@Address2,PinCode=@PinCode,Contact1=@Contact1,Contact2=@Contact2,Contact3=@Contact3,EmailID=@EmailID,LoginPass=@LoginPass,code=@code where LoginId=@LoginId", con);
 
-
+            cmd.Parameters.AddWithValue("@code", t_mem_code.Text);
             cmd.Parameters.Add("@MemberName", t_mem_name.Text);
             cmd.Parameters.Add("@MemberDesc", t_mem_desc.Text);
             cmd.Parameters.Add("@Address1", t_mem_add1.Text);
@@ -312,11 +313,14 @@ public partial class MemberMaster : System.Web.UI.Page
         t_mem_login.Text = "";
         t_mem_loginpass.Text = "";
         t_mem_login.Text = "";
+        t_mem_code.Text = " ";
 
     }
 
     protected void Edit_Command(object source, DataListCommandEventArgs e)
     {
+        ListBox1.ClearSelection();
+        ListBox2.ClearSelection();
         MultiView1.SetActiveView(View2);
         h_id.Text = "no";
 
@@ -325,6 +329,7 @@ public partial class MemberMaster : System.Web.UI.Page
         SqlConnection con1 = new SqlConnection(cs1);
         con1.Open();
         SqlCommand cmd = new SqlCommand();
+
         cmd.CommandText = "SELECT * FROM MemberMaster where MemberId=@TypeId";
         cmd.Parameters.Add("@TypeId", ID);
 
@@ -336,6 +341,7 @@ public partial class MemberMaster : System.Web.UI.Page
         {
             while (rdr.Read())
             {
+                t_mem_code.Text = Convert.ToInt32(rdr.GetDecimal(1)).ToString();
                 t_mem_name.Text = rdr.GetString(2);
                 t_mem_desc.Text = rdr.GetString(3);
                 t_mem_add1.Text = rdr.GetString(4);
@@ -352,8 +358,108 @@ public partial class MemberMaster : System.Web.UI.Page
             }
         }
 
+        ArrayList a3 = new ArrayList();
+        ArrayList a1 = new ArrayList();
+
+        using (SqlConnection sc5 = new SqlConnection(connstring))
+        {
+            SqlCommand smd = new SqlCommand("select * from membertype where memberid=@mid ",sc5);
+            smd.Parameters.Add("@mid",t_mem_code.Text);
+
+            sc5.Open();
+            rdr= smd.ExecuteReader();
+            if (rdr != null) {
+                while (rdr.Read()) {
+                    string type_id = Convert.ToInt32(rdr.GetDecimal(1)).ToString();
+                    string cat_id = Convert.ToInt32(rdr.GetDecimal(2)).ToString();
+                    a3.Add(type_id);
+                    a1.Add(cat_id);
+                    Response.Write("hii" + type_id + " " + cat_id + " " + t_mem_code.Text);
+                   
+                }
+
+            }
+            
+        }
+
+        string cs12 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        SqlConnection con12 = new SqlConnection(cs12);
+        con12.Open();
+        //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
+         SqlCommand cmd12 = new SqlCommand("select * from typemaster", con12);
+        //cmd12.Parameters.Add("@tid", item.Value);
+        //SqlDataAdapter adp1 = new SqlDataAdapter(cmd12);
+        //DataTable dt1 = new DataTable();
+        //adp1.Fill(dt1);
+        //cmd12.Connection = con12;
+        rdr = cmd12.ExecuteReader();
+       // ListBox1.DataSource = rdr;
+        ListBox1.DataTextField = "typedesc";
+        ListBox1.DataValueField = "typeid";
+        ListBox1.DataBind();
+        con12.Close();
+
+        
+        //a3.Add("13");
+        //a3.Add("14");
+        for (int i = 0; i < ListBox1.Items.Count;i++ )
+        {
+            Response.Write("fgdhdfhd");
+            Response.Write("<br> in lisy 1" + i+ListBox1.Items[i].Text);
+        }
+        ArrayList a4 = new ArrayList();
+        
+        foreach (string i1 in a3)
+        {
+            ListBox1.SelectedIndex = ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1));
+            a4.Add(ListBox1.SelectedIndex);
+            Response.Write("<br>"+"fist"+i1 + " " + ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1)));
+        }
+        
+            foreach (int i5 in a4)
+            {
+                //Response.Write("<br>" + ListBox1.Items[i5].Text + "<br>");
+                Response.Write("indesx"+i5);
+
+                ListBox1.Items[i5].Selected = true;
+            }
 
 
+
+            string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+            SqlConnection con = new SqlConnection(cs);
+            con.Open();
+            //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
+            cmd = new SqlCommand("select * from categorymaster  inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId", con);
+            //cmd.Parameters.Add("@tid", item.Value);
+            SqlDataAdapter adp = new SqlDataAdapter(cmd);
+            DataTable dt = new DataTable();
+            adp.Fill(dt);
+            cmd.Connection = con;
+            rdr = cmd.ExecuteReader();
+            ListBox2.DataSource = rdr;
+            ListBox2.DataTextField = "categorydesc";
+            ListBox2.DataValueField = "categoryid";
+            ListBox2.DataBind();
+
+            //a1.Add("36");
+            //a1.Add("37");
+            ArrayList a2 = new ArrayList();
+
+            foreach (string i1 in a1)
+            {
+                ListBox2.SelectedIndex = ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1));
+                a2.Add(ListBox2.SelectedIndex);
+                Response.Write(i1 + " " + ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1)));
+            }
+            foreach (int i2 in a2)
+            {
+                Response.Write("<br>" + ListBox2.Items[i2] + "<br>");
+                ListBox2.Items[i2].Selected = true;
+                Response.Write("indesx" + i2);
+            }
+       
+        //con.Close();
         databind();
     }
 

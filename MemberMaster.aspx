@@ -40,8 +40,7 @@
                                 &nbsp;<%# Eval("MemberName") %></td>
                                 <td style="width: 10%">
                                 &nbsp;<%# Eval("MemberDesc") %></td>
-                            <td style="width: 400px">
-                                &nbsp;<%# Eval("Address1")%></td>
+                           
                             <td style="width: 400px">
                                 &nbsp;<%# Eval("contact1")%></td>
                             <td style="width: 400px">
@@ -107,6 +106,7 @@
                     </td>
                     <td class="table_wid">
                         <asp:ListBox ID="ListBox2" runat="server" SelectionMode="Multiple"></asp:ListBox>
+                        <br />
                     </td>
                 </tr>
                 <tr>
@@ -123,6 +123,14 @@
                     </td>
                     <td class="table_wid">
                         <asp:TextBox ID="t_mem_desc" runat="server" CssClass="radius"></asp:TextBox>
+                    </td>
+                </tr>
+                 <tr>
+                    <td class="table_wid">
+                        <asp:Label ID="l_mem_code" runat="server" Text="MemberCode"></asp:Label>
+                    </td>
+                    <td class="table_wid">
+                        <asp:TextBox ID="t_mem_code" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
                 </tr>
                 <tr>
