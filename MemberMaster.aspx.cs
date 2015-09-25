@@ -47,30 +47,33 @@ public partial class MemberMaster : System.Web.UI.Page
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
                 //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
-                cmd = new SqlCommand("select * from categorymaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId where categorymaster.typeid=@tid ", con);
+                cmd = new SqlCommand("select * from categorymaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId ", con);
                 cmd.Parameters.Add("@tid", item.Value);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 adp.Fill(dt);
                 cmd.Connection = con;
                 rdr = cmd.ExecuteReader();
-
-                if (rdr != null)
-                {
-                    while (rdr.Read())
-                    {
-                        //j++;
-                        //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
-                        li.Text = rdr.GetString(2);
-                        li.Value = rdr[0].ToString();
-                       // Response.Write(li.Text + "\n");
-                        ListBox2.Items.Add(li);
-                        //ListBox2.DataSource = dt;
-                        //ListBox2.DataTextField = "categorydesc";
-                        //ListBox2.DataValueField = "categoryid";
-                        //ListBox2.DataBind();
-                    }
-                }
+                ListBox2.DataSource = rdr;
+                ListBox2.DataTextField = "categorydesc";
+                ListBox2.DataValueField = "categoryid";
+                ListBox2.DataBind();
+                //if (rdr != null)
+                //{
+                //    while (rdr.Read())
+                //    {
+                //        //j++;
+                //        //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
+                //        li.Text = rdr.GetString(2);
+                //        li.Value = rdr[0].ToString();
+                //       // Response.Write(li.Text + "\n");
+                //        ListBox2.Items.Add(li);
+                //        //ListBox2.DataSource = dt;
+                //        //ListBox2.DataTextField = "categorydesc";
+                //        //ListBox2.DataValueField = "categoryid";
+                //        //ListBox2.DataBind();
+                //    }
+                //}
                 con.Close();
 
             }
@@ -314,6 +317,8 @@ public partial class MemberMaster : System.Web.UI.Page
         t_mem_loginpass.Text = "";
         t_mem_login.Text = "";
         t_mem_code.Text = " ";
+        ListBox1.ClearSelection();
+        ListBox2.ClearSelection();
 
     }
 
@@ -374,7 +379,7 @@ public partial class MemberMaster : System.Web.UI.Page
                     string cat_id = Convert.ToInt32(rdr.GetDecimal(2)).ToString();
                     a3.Add(type_id);
                     a1.Add(cat_id);
-                    Response.Write("hii" + type_id + " " + cat_id + " " + t_mem_code.Text);
+              //      Response.Write("hii" + type_id + " " + cat_id + " " + t_mem_code.Text);
                    
                 }
 
@@ -402,24 +407,20 @@ public partial class MemberMaster : System.Web.UI.Page
         
         //a3.Add("13");
         //a3.Add("14");
-        for (int i = 0; i < ListBox1.Items.Count;i++ )
-        {
-            Response.Write("fgdhdfhd");
-            Response.Write("<br> in lisy 1" + i+ListBox1.Items[i].Text);
-        }
+       
         ArrayList a4 = new ArrayList();
         
         foreach (string i1 in a3)
         {
             ListBox1.SelectedIndex = ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1));
             a4.Add(ListBox1.SelectedIndex);
-            Response.Write("<br>"+"fist"+i1 + " " + ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1)));
+            //Response.Write("<br>"+"fist"+i1 + " " + ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1)));
         }
         
             foreach (int i5 in a4)
             {
                 //Response.Write("<br>" + ListBox1.Items[i5].Text + "<br>");
-                Response.Write("indesx"+i5);
+                //Response.Write("indesx"+i5);
 
                 ListBox1.Items[i5].Selected = true;
             }
@@ -450,13 +451,13 @@ public partial class MemberMaster : System.Web.UI.Page
             {
                 ListBox2.SelectedIndex = ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1));
                 a2.Add(ListBox2.SelectedIndex);
-                Response.Write(i1 + " " + ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1)));
+                //Response.Write(i1 + " " + ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1)));
             }
             foreach (int i2 in a2)
             {
-                Response.Write("<br>" + ListBox2.Items[i2] + "<br>");
+                //Response.Write("<br>" + ListBox2.Items[i2] + "<br>");
                 ListBox2.Items[i2].Selected = true;
-                Response.Write("indesx" + i2);
+                //Response.Write("indesx" + i2);
             }
        
         //con.Close();
