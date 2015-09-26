@@ -20,18 +20,13 @@ public partial class MemberMaster : System.Web.UI.Page
         if (!IsPostBack)
         {
             MultiView1.SetActiveView(View1);
-
             this.ViewState["vs"] = 0;
-
-
         }
         pos = (int)this.ViewState["vs"];
         databind();
-
-
     }
 
-
+    //---display category according type is selected
     protected void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
     {
         ListBox2.Items.Clear();
@@ -46,33 +41,20 @@ public partial class MemberMaster : System.Web.UI.Page
                 string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                 SqlConnection con = new SqlConnection(cs);
                 con.Open();
-                //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
                 cmd = new SqlCommand("select * from categorymaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId where CategoryMaster.TypeId=@tid ", con);
                 cmd.Parameters.Add("@tid", item.Value);
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
                 DataTable dt = new DataTable();
                 adp.Fill(dt);
                 cmd.Connection = con;
-                //cmd.ExecuteReader();
                 rdr = cmd.ExecuteReader();
-                //ListBox2.DataSource = rdr;
-                //ListBox2.DataTextField = "categorydesc";
-                //ListBox2.DataValueField = "categoryid";
-                //ListBox2.DataBind();
                 if (rdr != null)
                 {
                     while (rdr.Read())
                     {
-                        //j++;
-                        //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
                         li.Text = rdr.GetString(2);
                         li.Value = rdr[0].ToString();
-                        // Response.Write(li.Text + "\n");
                         ListBox2.Items.Add(li.Text);
-                        //ListBox2.DataSource = dt;
-                        //ListBox2.DataTextField = "categorydesc";
-                        //ListBox2.DataValueField = "categoryid";
-                        //ListBox2.DataBind();
                     }
                 }
                 con.Close();
@@ -84,6 +66,7 @@ public partial class MemberMaster : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
+        //--if it is in insert mode
         if (h_id.Text == "fl")
         {
             ClientScript.RegisterStartupScript(GetType(), "alert", "alert('insert.');", true);
@@ -94,8 +77,6 @@ public partial class MemberMaster : System.Web.UI.Page
                     if (ListBox2.Items[i].Selected)
                     {
                         string selectedItem1 = ListBox2.Items[i].Value;
-                      // Response.Write("val is " + selectedItem1);
-
                         string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                         SqlConnection con = new SqlConnection(cs);
                         con.Open();
@@ -103,7 +84,7 @@ public partial class MemberMaster : System.Web.UI.Page
                         cmd.Parameters.Add("@cid", selectedItem1);
                         cmd.Connection = con;
                         rdr = cmd.ExecuteReader();
-
+                        //---fetch category and type id and insert each in membertype table as pk membercode
                         if (rdr != null)
                         {
                             while (rdr.Read())
@@ -122,11 +103,9 @@ public partial class MemberMaster : System.Web.UI.Page
 
                                 if ((con2.State & ConnectionState.Open) > 0)
                                 {
-                                    //Response.Write("Connection OK!");
                                     int i1 = insert_mem_type.ExecuteNonQuery();
                                     if (i1 != 0)
                                     {
-                                        // Response.Write(i);
                                         ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
                                     }
                                 }
@@ -134,18 +113,16 @@ public partial class MemberMaster : System.Web.UI.Page
                                 {
                                     con2.Close();
                                 }
-
-
                             }
                         }
-                        
+                        //--end of insert in membertype
                         con.Close();
 
-                    }
-                }
-            }
+                    }//--end of cat list selected item
+                }//--end of tot cat list count
+            }//--end of cat list item > 0
 
-
+            //insert rest of data 
             SqlCommand insert_mem;
             string cs1 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con1 = new SqlConnection(cs1);
@@ -165,11 +142,9 @@ public partial class MemberMaster : System.Web.UI.Page
             insert_mem.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
             if ((con1.State & ConnectionState.Open) > 0)
             {
-                //Response.Write("Connection OK!");
                 int i = insert_mem.ExecuteNonQuery();
                 if (i != 0)
                 {
-                    // Response.Write(i);
                     ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
                 }
                 else
@@ -182,23 +157,25 @@ public partial class MemberMaster : System.Web.UI.Page
                 ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
             }
             con1.Close();
+            //insert done for rest of data
             databind();
             MultiView1.SetActiveView(View1);
-            
+
         }
+        //--end of insert mode
+        //--else start of update mode
 
         else
         {
+            //--delete member type data for perticular meber to update cat and type
             string cs6 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-
             SqlConnection con6 = new SqlConnection(cs6);
             con6.Open();
             SqlCommand cmd1 = new SqlCommand("Delete from membertype where memberid=@mid", con6);
-            cmd1.Parameters.Add("@mid",t_mem_code.Text);
+            cmd1.Parameters.Add("@mid", t_mem_code.Text);
             int del = cmd1.ExecuteNonQuery();
-            //Response.Write("del is " + del + " ");
             con6.Close();
-            //-----------
+            //--delet done
 
             if (ListBox2.Items.Count > 0)
             {
@@ -208,7 +185,7 @@ public partial class MemberMaster : System.Web.UI.Page
                     {
                         string selectedItem1 = ListBox2.Items[i].Value;
                         // Response.Write("val is " + selectedItem1);
-
+                        //---get cat and type according cat and insert into membertype
                         string cs9 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                         SqlConnection con56 = new SqlConnection(cs9);
                         con56.Open();
@@ -236,11 +213,9 @@ public partial class MemberMaster : System.Web.UI.Page
 
                                 if ((con29.State & ConnectionState.Open) > 0)
                                 {
-                                    //Response.Write("Connection OK!");
                                     int i1 = insert_mem_type.ExecuteNonQuery();
                                     if (i1 != 0)
                                     {
-                                        // Response.Write(i);
                                         ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
                                     }
                                 }
@@ -259,7 +234,7 @@ public partial class MemberMaster : System.Web.UI.Page
                 }
             }
 
-            //-------
+            //-------update another data
             ClientScript.RegisterStartupScript(GetType(), "alert", "alert('update.');", true);
             string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con7 = new SqlConnection(cs);
@@ -280,33 +255,30 @@ public partial class MemberMaster : System.Web.UI.Page
             cmd12.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
             if ((con7.State & ConnectionState.Open) > 0)
             {
-                //Response.Write("Connection OK!");
                 int i = cmd12.ExecuteNonQuery();
                 if (i != 0)
                 {
-                    // Response.Write(i);
-                    //  Response.Write("row inserted");
                     ClientScript.RegisterStartupScript(GetType(), "alert", "alert('member Updated Succesfully.');", true);
                     con7.Close();
                 }
                 else
                 {
-                    //Response.Write("row not inserted");
                     ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
                 }
 
             }
             else
             {
-                // Response.Write("Connection no good!");
                 ClientScript.RegisterStartupScript(GetType(), "alert", "alert('There is some problem try after sometime.');", true);
             }
             MultiView1.SetActiveView(View1);
+
+            //--update done
             databind();
         }
 
     }
-    
+
     protected void Button3_Click(object sender, EventArgs e)
     {
         MultiView1.SetActiveView(View1);
@@ -346,11 +318,8 @@ public partial class MemberMaster : System.Web.UI.Page
         SqlConnection con1 = new SqlConnection(cs1);
         con1.Open();
         SqlCommand cmd = new SqlCommand();
-
         cmd.CommandText = "SELECT * FROM MemberMaster where MemberId=@TypeId";
         cmd.Parameters.Add("@TypeId", ID);
-
-
         cmd.Connection = con1;
         SqlDataReader rdr;
         rdr = cmd.ExecuteReader();
@@ -380,99 +349,76 @@ public partial class MemberMaster : System.Web.UI.Page
 
         using (SqlConnection sc5 = new SqlConnection(connstring))
         {
-            SqlCommand smd = new SqlCommand("select * from membertype where memberid=@mid ",sc5);
-            smd.Parameters.Add("@mid",t_mem_code.Text);
+            SqlCommand smd = new SqlCommand("select * from membertype where memberid=@mid ", sc5);
+            smd.Parameters.Add("@mid", t_mem_code.Text);
 
             sc5.Open();
-            rdr= smd.ExecuteReader();
-            if (rdr != null) {
-                while (rdr.Read()) {
+            rdr = smd.ExecuteReader();
+            if (rdr != null)
+            {
+                while (rdr.Read())
+                {
                     string type_id = Convert.ToInt32(rdr.GetDecimal(1)).ToString();
                     string cat_id = Convert.ToInt32(rdr.GetDecimal(2)).ToString();
                     a3.Add(type_id);
                     a1.Add(cat_id);
-              //      Response.Write("hii" + type_id + " " + cat_id + " " + t_mem_code.Text);
-                   
                 }
 
             }
-            
+
         }
 
         string cs12 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
         SqlConnection con12 = new SqlConnection(cs12);
         con12.Open();
-        //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
-         SqlCommand cmd12 = new SqlCommand("select * from typemaster", con12);
-        //cmd12.Parameters.Add("@tid", item.Value);
-        //SqlDataAdapter adp1 = new SqlDataAdapter(cmd12);
-        //DataTable dt1 = new DataTable();
-        //adp1.Fill(dt1);
-        //cmd12.Connection = con12;
+        SqlCommand cmd12 = new SqlCommand("select * from typemaster", con12);
         rdr = cmd12.ExecuteReader();
-       // ListBox1.DataSource = rdr;
         ListBox1.DataTextField = "typedesc";
         ListBox1.DataValueField = "typeid";
         ListBox1.DataBind();
         con12.Close();
 
-        
-        //a3.Add("13");
-        //a3.Add("14");
-       
         ArrayList a4 = new ArrayList();
-        
+        //--bydefault selection of type
         foreach (string i1 in a3)
         {
             ListBox1.SelectedIndex = ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1));
             a4.Add(ListBox1.SelectedIndex);
-            //Response.Write("<br>"+"fist"+i1 + " " + ListBox1.Items.IndexOf(ListBox1.Items.FindByValue(i1)));
         }
-        
-            foreach (int i5 in a4)
-            {
-                //Response.Write("<br>" + ListBox1.Items[i5].Text + "<br>");
-                //Response.Write("indesx"+i5);
 
-                ListBox1.Items[i5].Selected = true;
-            }
+        foreach (int i5 in a4)
+        {
+            ListBox1.Items[i5].Selected = true;
+        }
 
-             
 
-            string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-            SqlConnection con = new SqlConnection(cs);
-            con.Open();
-            //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
-            cmd = new SqlCommand("select * from categorymaster  inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId ", con);
-           // cmd.Parameters.Add("@tid", item.Value);
-            SqlDataAdapter adp = new SqlDataAdapter(cmd);
-            DataTable dt = new DataTable();
-            adp.Fill(dt);
-            cmd.Connection = con;
-            rdr = cmd.ExecuteReader();
-            ListBox2.DataSource = rdr;
-            ListBox2.DataTextField = "categorydesc";
-            ListBox2.DataValueField = "categoryid";
-            ListBox2.DataBind();
 
-            //a1.Add("36");
-            //a1.Add("37");
-            ArrayList a2 = new ArrayList();
+        string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+        SqlConnection con = new SqlConnection(cs);
+        con.Open();
+        cmd = new SqlCommand("select * from categorymaster  inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId ", con);
+        // cmd.Parameters.Add("@tid", item.Value);
+        SqlDataAdapter adp = new SqlDataAdapter(cmd);
+        DataTable dt = new DataTable();
+        adp.Fill(dt);
+        cmd.Connection = con;
+        rdr = cmd.ExecuteReader();
+        ListBox2.DataSource = rdr;
+        ListBox2.DataTextField = "categorydesc";
+        ListBox2.DataValueField = "categoryid";
+        ListBox2.DataBind();
+        ArrayList a2 = new ArrayList();
+        //--by default selection of category
+        foreach (string i1 in a1)
+        {
+            ListBox2.SelectedIndex = ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1));
+            a2.Add(ListBox2.SelectedIndex);
+        }
+        foreach (int i2 in a2)
+        {
+            ListBox2.Items[i2].Selected = true;
+        }
 
-            foreach (string i1 in a1)
-            {
-                ListBox2.SelectedIndex = ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1));
-                a2.Add(ListBox2.SelectedIndex);
-                //Response.Write(i1 + " " + ListBox2.Items.IndexOf(ListBox2.Items.FindByValue(i1)));
-            }
-            foreach (int i2 in a2)
-            {
-                //Response.Write("<br>" + ListBox2.Items[i2] + "<br>");
-                ListBox2.Items[i2].Selected = true;
-                //Response.Write("indesx" + i2);
-            }
-       
-        //con.Close();
         databind();
     }
 
@@ -520,69 +466,6 @@ public partial class MemberMaster : System.Web.UI.Page
     {
         pos = adsource.PageCount - 1;
         databind();
-    }
-
-
-    protected void Button2_Click1(object sender, EventArgs e)
-    {
-        IEnumerator ir = ListBox1.Items.GetEnumerator();
-        while (ir.MoveNext())
-        {
-            ListItem li = (ListItem)ir.Current;
-            Response.Write(" " + li.Text + "." + li.Value);
-            if (li.Value == "13" || li.Value == "14")
-            {
-                li.Selected = true;
-                Response.Write("......." + li.Text);
-
-            }
-
-        }
-
-        string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-        SqlConnection con = new SqlConnection(cs);
-        con.Open();
-        //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
-        cmd = new SqlCommand("select * from categorymaster  inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId", con);
-        //cmd.Parameters.Add("@tid", item.Value);
-        SqlDataAdapter adp = new SqlDataAdapter(cmd);
-        DataTable dt = new DataTable();
-        adp.Fill(dt);
-        cmd.Connection = con;
-        rdr = cmd.ExecuteReader();
-        ListItem li1 = new ListItem();
-
-        int j = 0;
-        if (rdr != null)
-        {
-            while (rdr.Read())
-            {
-                j++;
-                //   li.Text = rdr.GetString(2) + "-" + rdr.GetString(7);
-                li1.Text = rdr.GetString(2);
-                li1.Value = rdr[0].ToString();
-
-                Response.Write(li1.Text + " " + li1.Value);
-                ListBox2.Items.Add(li1);
-            }
-        }
-        ListBox2.Items.Add(new ListItem("abc", "36"));
-        for (int y = 0; y < ListBox2.Items.Count; y++)
-        {
-
-            string a = ListBox2.Items[y].Value;
-            string b = "37";
-            if (a.Equals(b)) { Response.Write("true"); ListBox2.Items[y].Selected = true; }
-            else { Response.Write("false"); }
-
-
-            Response.Write("in loop" + ListBox2.Items[y].Text + " " + ListBox2.Items[y].Value);
-        }
-
-        con.Close();
-
-
-
     }
 
 }
