@@ -189,35 +189,105 @@ public partial class MemberMaster : System.Web.UI.Page
 
         else
         {
+            string cs6 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
 
+            SqlConnection con6 = new SqlConnection(cs6);
+            con6.Open();
+            SqlCommand cmd1 = new SqlCommand("Delete from membertype where memberid=@mid", con6);
+            cmd1.Parameters.Add("@mid",t_mem_code.Text);
+            int del = cmd1.ExecuteNonQuery();
+            //Response.Write("del is " + del + " ");
+            con6.Close();
+            //-----------
+
+            if (ListBox2.Items.Count > 0)
+            {
+                for (int i = 0; i < ListBox2.Items.Count; i++)
+                {
+                    if (ListBox2.Items[i].Selected)
+                    {
+                        string selectedItem1 = ListBox2.Items[i].Value;
+                        // Response.Write("val is " + selectedItem1);
+
+                        string cs9 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                        SqlConnection con56 = new SqlConnection(cs9);
+                        con56.Open();
+                        SqlCommand cmd;
+                        cmd = new SqlCommand("select * from categorymaster where categorydesc=@cid", con56);
+                        cmd.Parameters.Add("@cid", selectedItem1);
+                        cmd.Connection = con56;
+                        rdr = cmd.ExecuteReader();
+
+                        if (rdr != null)
+                        {
+                            while (rdr.Read())
+                            {
+                                int c_id = Convert.ToInt32(rdr.GetDecimal(0));
+                                int t_id = Convert.ToInt32(rdr.GetDecimal(1));
+                                // Response.Write("cat is :" + c_id + "typeid : " + t_id);
+                                SqlCommand insert_mem_type;
+                                string cs29 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
+                                SqlConnection con29 = new SqlConnection(cs29);
+                                con29.Open();
+                                insert_mem_type = new SqlCommand("INSERT INTO Membertype (MemberId,TypeID,CategoryID) VALUES(@MemberId,@TypeID,@CategoryID)", con29);
+                                insert_mem_type.Parameters.Add("@MemberId", t_mem_code.Text);
+                                insert_mem_type.Parameters.Add("@TypeID", t_id);
+                                insert_mem_type.Parameters.Add("@CategoryID", c_id);
+
+                                if ((con29.State & ConnectionState.Open) > 0)
+                                {
+                                    //Response.Write("Connection OK!");
+                                    int i1 = insert_mem_type.ExecuteNonQuery();
+                                    if (i1 != 0)
+                                    {
+                                        // Response.Write(i);
+                                        ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Type Added Succesfully.');", true);
+                                    }
+                                }
+                                else
+                                {
+                                    con29.Close();
+                                }
+
+
+                            }
+                        }
+
+                        con56.Close();
+
+                    }
+                }
+            }
+
+            //-------
             ClientScript.RegisterStartupScript(GetType(), "alert", "alert('update.');", true);
             string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
-            SqlConnection con = new SqlConnection(cs);
-            con.Open();
-            SqlCommand cmd = new SqlCommand("update MemberMaster set MemberName=@MemberName,memberdesc=@memberdesc,Address1=@Address1,Address2=@Address2,PinCode=@PinCode,Contact1=@Contact1,Contact2=@Contact2,Contact3=@Contact3,EmailID=@EmailID,LoginPass=@LoginPass,code=@code where LoginId=@LoginId", con);
+            SqlConnection con7 = new SqlConnection(cs);
+            con7.Open();
+            SqlCommand cmd12 = new SqlCommand("update MemberMaster set MemberName=@MemberName,memberdesc=@memberdesc,Address1=@Address1,Address2=@Address2,PinCode=@PinCode,Contact1=@Contact1,Contact2=@Contact2,Contact3=@Contact3,EmailID=@EmailID,LoginPass=@LoginPass,code=@code where LoginId=@LoginId", con7);
 
-            cmd.Parameters.AddWithValue("@code", t_mem_code.Text);
-            cmd.Parameters.Add("@MemberName", t_mem_name.Text);
-            cmd.Parameters.Add("@MemberDesc", t_mem_desc.Text);
-            cmd.Parameters.Add("@Address1", t_mem_add1.Text);
-            cmd.Parameters.Add("@Address2", t_mem_add2.Text);
-            cmd.Parameters.Add("@PinCode", t_mem_pin.Text);
-            cmd.Parameters.Add("@Contact1", t_mem_con1.Text);
-            cmd.Parameters.Add("@Contact2", t_mem_con2.Text);
-            cmd.Parameters.Add("@Contact3", t_mem_con3.Text);
-            cmd.Parameters.Add("@EmailID", t_mem_email.Text);
-            cmd.Parameters.Add("@LoginID", t_mem_login.Text);
-            cmd.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
-            if ((con.State & ConnectionState.Open) > 0)
+            cmd12.Parameters.AddWithValue("@code", t_mem_code.Text);
+            cmd12.Parameters.Add("@MemberName", t_mem_name.Text);
+            cmd12.Parameters.Add("@MemberDesc", t_mem_desc.Text);
+            cmd12.Parameters.Add("@Address1", t_mem_add1.Text);
+            cmd12.Parameters.Add("@Address2", t_mem_add2.Text);
+            cmd12.Parameters.Add("@PinCode", t_mem_pin.Text);
+            cmd12.Parameters.Add("@Contact1", t_mem_con1.Text);
+            cmd12.Parameters.Add("@Contact2", t_mem_con2.Text);
+            cmd12.Parameters.Add("@Contact3", t_mem_con3.Text);
+            cmd12.Parameters.Add("@EmailID", t_mem_email.Text);
+            cmd12.Parameters.Add("@LoginID", t_mem_login.Text);
+            cmd12.Parameters.Add("@LoginPass", t_mem_loginpass.Text);
+            if ((con7.State & ConnectionState.Open) > 0)
             {
                 //Response.Write("Connection OK!");
-                int i = cmd.ExecuteNonQuery();
+                int i = cmd12.ExecuteNonQuery();
                 if (i != 0)
                 {
                     // Response.Write(i);
                     //  Response.Write("row inserted");
                     ClientScript.RegisterStartupScript(GetType(), "alert", "alert('member Updated Succesfully.');", true);
-                    con.Close();
+                    con7.Close();
                 }
                 else
                 {
