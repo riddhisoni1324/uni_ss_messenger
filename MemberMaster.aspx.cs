@@ -437,14 +437,14 @@ public partial class MemberMaster : System.Web.UI.Page
                 ListBox1.Items[i5].Selected = true;
             }
 
-
+             
 
             string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
             SqlConnection con = new SqlConnection(cs);
             con.Open();
             //select * from CategoryMaster inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId
-            cmd = new SqlCommand("select * from categorymaster  inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId", con);
-            //cmd.Parameters.Add("@tid", item.Value);
+            cmd = new SqlCommand("select * from categorymaster  inner join TypeMaster on CategoryMaster.TypeId=TypeMaster.TypeId ", con);
+           // cmd.Parameters.Add("@tid", item.Value);
             SqlDataAdapter adp = new SqlDataAdapter(cmd);
             DataTable dt = new DataTable();
             adp.Fill(dt);

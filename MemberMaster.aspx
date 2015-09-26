@@ -10,11 +10,21 @@
         }
         .style3
         {
-            width: 342px;
+            width: 481px;
         }
         .style5
         {
             width: 342px;
+            height: 50px;
+        }
+        .style6
+        {
+            width: 244px;
+            height: 50px;
+        }
+        .style7
+        {
+            width: 481px;
             height: 50px;
         }
     </style>
@@ -113,11 +123,11 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_name" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                     <td class="style5" >
+                     <td class="style7" >
                        
                         </td>
                     
-                     <td class="table_wid" rowspan="4" colspan="2">
+                     <td class="style6" rowspan="4" colspan="2">
                         
                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         
@@ -129,6 +139,12 @@
                              style="margin-left: 98px" Width="246px" AppendDataBoundItems="true">
                             <%-- <asp:ListItem Text="select all" Value="all" runat="server" />--%>
                         </asp:ListBox>
+                        
+                       
+                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" 
+                             ControlToValidate="ListBox1" ErrorMessage="Select type" 
+                             ForeColor="#FF3300" ValidationGroup="f"></asp:RequiredFieldValidator>
                         
                        
                         </td>
@@ -150,7 +166,7 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_desc" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                     
@@ -162,7 +178,11 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_code" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
+                       
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" 
+                            ControlToValidate="t_mem_code" ErrorMessage="this field is required" 
+                            ForeColor="#FF3300" ValidationGroup="f"></asp:RequiredFieldValidator>
                        
                         </td>
                     
@@ -173,9 +193,9 @@
                     </td>
                     <td class="style1">
                         <asp:TextBox ID="t_mem_add1" runat="server" TextMode="MultiLine" CssClass="radius"
-                            Width="195px"></asp:TextBox>
+                            Width="161px"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                 </tr>
@@ -185,12 +205,12 @@
                     </td>
                     <td class="style1">
                         <asp:TextBox ID="t_mem_add2" runat="server" TextMode="MultiLine" CssClass="radius"
-                            Width="195px"></asp:TextBox>
+                            Width="160px"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
-                         <td class="table_wid" rowspan="4" colspan="2">
+                         <td class="style6" rowspan="4" colspan="2">
                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
@@ -203,6 +223,15 @@
                     
                         <asp:ListBox ID="ListBox2" runat="server" SelectionMode="Multiple" Height="158px" 
                                  style="margin-left: 102px" Width="262px"></asp:ListBox>
+                             <br />
+                            
+                            
+                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" 
+                                 ControlToValidate="ListBox2" ErrorMessage="select cat" ForeColor="#FF3300" 
+                                 ValidationGroup="f"></asp:RequiredFieldValidator>
+                             <br />
+                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                         </td>
                         <td class="table_wid" >
                        
@@ -218,9 +247,10 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_pin" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5">
+                    <td class="style7">
                         <asp:RegularExpressionValidator ID="RegularExpressionValidator2" runat="server" ControlToValidate="t_mem_pin"
-                            ErrorMessage="Enter Valid PinCode" ValidationExpression="\d{6}"></asp:RegularExpressionValidator>
+                            ErrorMessage="Enter Valid PinCode" ValidationExpression="\d{6}" 
+                            ForeColor="#FF3300" ValidationGroup="f"></asp:RegularExpressionValidator>
                     </td>
                 </tr>
                 <tr>
@@ -230,7 +260,7 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_con1" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                 </tr>
@@ -241,7 +271,7 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_con2" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                 </tr>
@@ -252,7 +282,7 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_con3" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                 </tr>
@@ -265,7 +295,14 @@
                     </td>
                     <td class="style3">
                         <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="t_mem_email"
-                            ErrorMessage="Enter Valid Email Id" ForeColor="Red" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
+                            ErrorMessage="Enter Valid Email Id" ForeColor="Red" 
+                            ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" 
+                            ValidationGroup="f"></asp:RegularExpressionValidator>
+                        <br />
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" 
+                            ControlToValidate="t_mem_email" ErrorMessage="this field is required" 
+                            ForeColor="#FF3300" ValidationGroup="f"></asp:RequiredFieldValidator>
+                        <br />
                     </td>
                 </tr>
                 <tr class="table_wid">
@@ -275,7 +312,11 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_login" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
+                       
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" 
+                            ControlToValidate="t_mem_login" ErrorMessage="this field is required" 
+                            ForeColor="#FF3300" ValidationGroup="f"></asp:RequiredFieldValidator>
                        
                         </td>
                 </tr>
@@ -286,7 +327,7 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_loginpass" runat="server" CssClass="radius" TextMode="Password"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                 </tr>
@@ -297,7 +338,7 @@
                     <td class="style1">
                         <asp:TextBox ID="t_mem_update" runat="server" CssClass="radius"></asp:TextBox>
                     </td>
-                    <td class="style5" >
+                    <td class="style7" >
                        
                         </td>
                 </tr>
