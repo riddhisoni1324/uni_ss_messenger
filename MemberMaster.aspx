@@ -12,11 +12,6 @@
         {
             width: 481px;
         }
-        .style5
-        {
-            width: 342px;
-            height: 50px;
-        }
         .style6
         {
             width: 244px;
@@ -146,9 +141,18 @@
                              ControlToValidate="ListBox1" ErrorMessage="Select type" 
                              ForeColor="#FF3300" ValidationGroup="f"></asp:RequiredFieldValidator>
                         
+                         <br />
+                        
+                         <br />
+                        
+                        <asp:Button ID="Button3" runat="server" onclick="Button3_Click1" 
+                             Text="select all type" style="margin-left: 94px" />
+                         
+                        
                        
                         </td>
                         <td class="table_wid" >
+                       
                        
                         </td>
                         <td class="table_wid" >
@@ -222,7 +226,8 @@
                         
                     
                         <asp:ListBox ID="ListBox2" runat="server" SelectionMode="Multiple" Height="158px" 
-                                 style="margin-left: 102px" Width="262px"></asp:ListBox>
+                                 style="margin-left: 102px" Width="262px" 
+                                 ></asp:ListBox>
                              <br />
                             
                             
@@ -231,7 +236,9 @@
                                  ControlToValidate="ListBox2" ErrorMessage="select cat" ForeColor="#FF3300" 
                                  ValidationGroup="f"></asp:RequiredFieldValidator>
                              <br />
-                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                             <br />
+                             <asp:Button ID="Button4" runat="server" onclick="Button4_Click" 
+                                 Text="select all category" Width="128px" style="margin-left: 107px" />
                         </td>
                         <td class="table_wid" >
                        
