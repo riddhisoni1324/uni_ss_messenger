@@ -17,10 +17,13 @@ public partial class MemberMaster : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        Button1.Focus();
         if (!IsPostBack)
         {
+            
             MultiView1.SetActiveView(View1);
             this.ViewState["vs"] = 0;
+            Button1.Focus();
         }
         pos = (int)this.ViewState["vs"];
         databind();
@@ -70,7 +73,10 @@ public partial class MemberMaster : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
-        //--if it is in insert mode
+        //Button1.Focus();
+        //Response.Write("button");
+        //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('insersadasdt.');", true);
+        ////--if it is in insert mode
         if (h_id.Text == "fl")
         {
             ClientScript.RegisterStartupScript(GetType(), "alert", "alert('insert.');", true);
@@ -81,7 +87,7 @@ public partial class MemberMaster : System.Web.UI.Page
                     if (ListBox2.Items[i].Selected)
                     {
                         string selectedItem1 = ListBox2.Items[i].Value;
-                        Response.Write("selct is "+selectedItem1);
+                        //Response.Write("selct is "+selectedItem1);
                         string cs = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                         SqlConnection con = new SqlConnection(cs);
                         con.Open();
@@ -96,7 +102,7 @@ public partial class MemberMaster : System.Web.UI.Page
                             {
                                 int c_id = Convert.ToInt32(rdr.GetDecimal(0));
                                 int t_id = Convert.ToInt32(rdr.GetDecimal(1));
-                                Response.Write("cat is :" + c_id + "typeid : " + t_id);
+                                //Response.Write("cat is :" + c_id + "typeid : " + t_id);
                                 SqlCommand insert_mem_type;
                                 string cs2 = System.Configuration.ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString;
                                 SqlConnection con2 = new SqlConnection(cs2);
@@ -475,6 +481,8 @@ public partial class MemberMaster : System.Web.UI.Page
 
     protected void Button3_Click1(object sender, EventArgs e)
     {
+        Button1.Focus();
+       // Response.Write("press save");
         foreach (ListItem li in ListBox1.Items)
         {
             li.Selected = true;
@@ -501,7 +509,7 @@ public partial class MemberMaster : System.Web.UI.Page
     }
     protected void Button4_Click(object sender, EventArgs e)
     {
-
+        Button1.Focus();
         foreach (ListItem li1 in ListBox2.Items)
         {
             //Response.Write("sadsad"+li1.Text);
